@@ -11,8 +11,11 @@
     }
   }
 
-  function set(key, value) {
+  function set(key, value, opts) {
     localStorage.setItem(PREFIX + key, JSON.stringify(value));
+    if (!(opts && opts.silent)) {
+      window.dispatchEvent(new CustomEvent("store-set", { detail: { key, value } }));
+    }
   }
 
   function allKeys() {
