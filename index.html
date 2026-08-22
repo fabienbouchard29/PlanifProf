@@ -9,53 +9,96 @@
 <body>
   <header class="app-header">
     <h1>PlanifProf</h1>
-    <p class="subtitle">Planification hebdomadaire pour enseignants</p>
+    <p class="subtitle">Le planificateur numérique flexible pour enseignants</p>
   </header>
 
-  <main class="layout">
-    <section class="panel schedule-panel">
-      <div class="panel-header">
-        <h2>Horaire de la semaine</h2>
-        <button id="clear-schedule" class="btn btn-ghost">Vider l'horaire</button>
-      </div>
-      <div class="table-wrap">
-        <table id="schedule-table">
-          <thead>
-            <tr>
-              <th>Période</th>
-              <th>Lundi</th>
-              <th>Mardi</th>
-              <th>Mercredi</th>
-              <th>Jeudi</th>
-              <th>Vendredi</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+  <nav class="main-nav">
+    <button class="main-tab active" data-view="view-horaire">Horaire</button>
+    <button class="main-tab" data-view="view-calendrier">Calendrier</button>
+    <button class="main-tab" data-view="view-eleves">Élèves</button>
+    <button class="main-tab" data-view="view-ressources">Ressources</button>
+    <button class="main-tab" data-view="view-compte">Compte</button>
+  </nav>
+
+  <main class="views">
+    <section class="view active" id="view-horaire"></section>
+
+    <section class="view" id="view-calendrier"></section>
+
+    <section class="view" id="view-eleves">
+      <nav class="sub-nav">
+        <button class="sub-tab active" data-subview="sub-groupes">Groupes &amp; élèves</button>
+        <button class="sub-tab" data-subview="sub-evaluations">Évaluations</button>
+        <button class="sub-tab" data-subview="sub-equipes">Équipes</button>
+        <button class="sub-tab" data-subview="sub-pigeage">Pigeage</button>
+      </nav>
+      <div class="subview active" id="sub-groupes"></div>
+      <div class="subview" id="sub-evaluations"></div>
+      <div class="subview" id="sub-equipes"></div>
+      <div class="subview" id="sub-pigeage"></div>
     </section>
 
-    <section class="panel tasks-panel">
-      <div class="panel-header">
-        <h2>Tâches à faire</h2>
-      </div>
-      <form id="task-form" class="task-form">
-        <input type="text" id="task-input" placeholder="Ajouter une tâche…" required />
-        <select id="task-priority">
-          <option value="normale">Normale</option>
-          <option value="haute">Haute</option>
-          <option value="basse">Basse</option>
-        </select>
-        <button type="submit" class="btn btn-primary">Ajouter</button>
-      </form>
-      <ul id="task-list" class="task-list"></ul>
-    </section>
+    <section class="view" id="view-ressources"></section>
+
+    <section class="view" id="view-compte"></section>
   </main>
 
   <footer class="app-footer">
-    <p>Les données sont sauvegardées localement dans votre navigateur.</p>
+    <p>Vos données sont sauvegardées dans ce navigateur. Utilisez l'onglet Compte pour exporter/importer une sauvegarde entre appareils.</p>
   </footer>
 
-  <script src="script.js"></script>
+  <div class="modal" id="event-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Événement</h3>
+        <button type="button" class="modal-close">✕</button>
+      </div>
+      <form id="event-form">
+        <label>Titre
+          <input type="text" name="title" placeholder="Ex. Contrôle chapitre 3" />
+        </label>
+        <label>Matière
+          <select name="subjectId"></select>
+        </label>
+        <label>Notes
+          <textarea name="notes" rows="3" placeholder="Détails, matériel requis…"></textarea>
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="event-delete">Supprimer</button>
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="ocr-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Importer une photo d'horaire</h3>
+        <button type="button" class="modal-close">✕</button>
+      </div>
+      <p class="muted">Prenez une photo ou choisissez une image de votre horaire papier. Le texte est reconnu automatiquement — vérifiez-le avant de l'utiliser, la reconnaissance n'est jamais garantie à 100 %.</p>
+      <input type="file" id="ocr-file-input" accept="image/*" capture="environment" />
+      <p id="ocr-status" class="muted"></p>
+      <textarea id="ocr-result" rows="10" placeholder="Le texte reconnu apparaîtra ici…"></textarea>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/subjects.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/template.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/ocr.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/students.js"></script>
+  <script src="js/evaluations.js"></script>
+  <script src="js/teams.js"></script>
+  <script src="js/picker.js"></script>
+  <script src="js/resources.js"></script>
+  <script src="js/exports.js"></script>
+  <script src="js/account.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
