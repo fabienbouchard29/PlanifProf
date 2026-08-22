@@ -37,12 +37,16 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /eleves/{studentId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
     }
   }
 }
 ```
 
-Chaque enseignant connecté a ses données stockées dans `users/{son-identifiant}`, invisibles aux autres comptes.
+Chaque enseignant connecté a ses données stockées dans `users/{son-identifiant}` (horaire, groupes, ressources, etc.), invisibles aux autres comptes. Les élèves sont stockés séparément, un document par élève, dans la sous-collection `users/{son-identifiant}/eleves/{eleve}`.
 
 ## Utilisation
 
