@@ -52,7 +52,7 @@
 }
 
 :root[data-theme="serieux"] .btn-primary,
-:root[data-theme="serieux"] .main-tab.active,
+:root[data-theme="serieux"] .main-nav .main-tab.active,
 :root[data-theme="serieux"] .sub-tab.active,
 :root[data-theme="serieux"] .group-item.active {
   background: var(--primary);
@@ -65,14 +65,13 @@
   transform: none;
 }
 
-:root[data-theme="serieux"] .tab-icon,
 :root[data-theme="serieux"] .picker-display,
 :root[data-theme="serieux"] .onboarding-option strong,
 :root[data-theme="serieux"] .brand-mark {
   filter: grayscale(0.4);
 }
 
-:root[data-theme="serieux"] .tab-icon {
+:root[data-theme="serieux"] .main-nav .tab-icon {
   display: none;
 }
 
