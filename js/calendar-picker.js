@@ -7,6 +7,8 @@
 
   let state = null;
   let openPopover = null;
+  let quickMode = null; // null = "choisir à chaque clic", "retirer", or an EXCEPTION_TYPES key
+  let countLabelEl = null;
 
   function toISO(d) {
     return d.toISOString().slice(0, 10);
@@ -45,6 +47,36 @@
       openPopover.remove();
       openPopover = null;
     }
+  }
+
+  function updateDayButton(cfg, iso, btn) {
+    const isMarked = cfg.exceptions.includes(iso);
+    const typeInfo = Config.EXCEPTION_TYPES.find((t) => t.key === cfg.exceptionTypes[iso]);
+    btn.className = "mini-day" + (isMarked ? " marked" : "");
+    btn.style.background = isMarked ? (typeInfo ? typeInfo.color : "") : "";
+    btn.title = isMarked ? `${typeInfo ? typeInfo.label : "Sans école"} — cliquer pour modifier` : "Cliquer pour marquer ce jour";
+  }
+
+  function updateCount(cfg) {
+    if (countLabelEl) countLabelEl.textContent = `${cfg.exceptions.length} jour(s) marqué(s) au total.`;
+  }
+
+  function applyQuickMode(cfg, iso, btn) {
+    if (quickMode === "retirer") {
+      const idx = cfg.exceptions.indexOf(iso);
+      if (idx !== -1) cfg.exceptions.splice(idx, 1);
+      delete cfg.exceptionTypes[iso];
+    } else {
+      cfg.exceptionTypes[iso] = quickMode;
+      if (!cfg.exceptions.includes(iso)) {
+        cfg.exceptions.push(iso);
+        cfg.exceptions.sort();
+      }
+    }
+    Config.saveConfig(cfg);
+    document.dispatchEvent(new CustomEvent("config-changed"));
+    updateDayButton(cfg, iso, btn);
+    updateCount(cfg);
   }
 
   function openTypePicker(anchorEl, iso, cfg, onDone) {
@@ -122,26 +154,25 @@
         if (date) {
           const iso = toISO(date);
           const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-          const isMarked = cfg.exceptions.includes(iso);
-          const typeInfo = Config.EXCEPTION_TYPES.find((t) => t.key === cfg.exceptionTypes[iso]);
           const btn = document.createElement("button");
           btn.type = "button";
-          btn.className = "mini-day" + (isWeekend ? " weekend" : "") + (isMarked ? " marked" : "");
+          btn.className = "mini-day" + (isWeekend ? " weekend" : "");
           btn.textContent = String(date.getDate());
           btn.disabled = isWeekend;
-          if (isMarked) btn.style.background = typeInfo ? typeInfo.color : "";
-          btn.title = isWeekend
-            ? "Fin de semaine (déjà sans école)"
-            : isMarked
-            ? `${typeInfo ? typeInfo.label : "Sans école"} — cliquer pour modifier`
-            : "Cliquer pour marquer ce jour";
-          if (!isWeekend) {
+          if (isWeekend) {
+            btn.title = "Fin de semaine (déjà sans école)";
+          } else {
+            updateDayButton(cfg, iso, btn);
             btn.addEventListener("click", (e) => {
               e.stopPropagation();
-              openTypePicker(btn, iso, cfg, () => {
-                document.dispatchEvent(new CustomEvent("config-changed"));
-                render(rootContainer);
-              });
+              if (quickMode) {
+                applyQuickMode(cfg, iso, btn);
+              } else {
+                openTypePicker(btn, iso, cfg, () => {
+                  document.dispatchEvent(new CustomEvent("config-changed"));
+                  render(rootContainer);
+                });
+              }
             });
           }
           td.appendChild(btn);
@@ -170,6 +201,7 @@
       <span class="muted" id="cp-count"></span>
     `;
     container.appendChild(controls);
+    countLabelEl = controls.querySelector("#cp-count");
 
     controls.querySelector("#cp-start-month").addEventListener("change", (e) => {
       if (!e.target.value) return;
@@ -187,7 +219,45 @@
         render(container);
       }
     });
-    controls.querySelector("#cp-count").textContent = `${cfg.exceptions.length} jour(s) marqué(s) au total.`;
+    updateCount(cfg);
+
+    const modeBar = document.createElement("div");
+    modeBar.className = "quick-mode-bar";
+    modeBar.innerHTML = `<span class="muted">Mode de clic — choisissez un type, puis cliquez sur plusieurs jours d'affilée :</span>`;
+
+    const noneChip = document.createElement("button");
+    noneChip.type = "button";
+    noneChip.className = "chip chip-none" + (quickMode === null ? " chip-active" : "");
+    noneChip.textContent = "✋ Choisir à chaque clic";
+    noneChip.addEventListener("click", () => {
+      quickMode = null;
+      render(container);
+    });
+    modeBar.appendChild(noneChip);
+
+    Config.EXCEPTION_TYPES.forEach((t) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip" + (quickMode === t.key ? " chip-active" : "");
+      chip.style.background = t.color;
+      chip.textContent = "🖊️ " + t.label;
+      chip.addEventListener("click", () => {
+        quickMode = t.key;
+        render(container);
+      });
+      modeBar.appendChild(chip);
+    });
+
+    const removeChip = document.createElement("button");
+    removeChip.type = "button";
+    removeChip.className = "chip chip-none" + (quickMode === "retirer" ? " chip-active" : "");
+    removeChip.textContent = "🧹 Retirer";
+    removeChip.addEventListener("click", () => {
+      quickMode = "retirer";
+      render(container);
+    });
+    modeBar.appendChild(removeChip);
+    container.appendChild(modeBar);
 
     const legend = document.createElement("div");
     legend.className = "mini-legend";

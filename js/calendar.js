@@ -144,6 +144,8 @@
           empty.style.color = exceptionType.color;
           empty.style.fontStyle = "normal";
           empty.style.fontWeight = "600";
+          col.style.background = exceptionType.color + "22";
+          col.style.borderColor = exceptionType.color;
         } else {
           empty.textContent = date.getDay() === 0 || date.getDay() === 6 ? "Fin de semaine" : "Aucun cours";
         }
