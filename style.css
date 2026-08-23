@@ -670,9 +670,15 @@ h1, h2, h3, h4 {
   align-items: stretch;
 }
 
+.weather-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
 .weather-city-label {
   font-weight: 600;
-  margin-right: auto;
 }
 
 .weather-strip {

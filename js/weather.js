@@ -76,7 +76,7 @@
     }
 
     box.classList.add("weather-week");
-    box.innerHTML = `<span class="weather-city-label">📍 ${city.name}</span><button type="button" class="btn btn-ghost btn-small" id="weather-change">Changer</button>`;
+    box.innerHTML = `<div class="weather-top-row"><span class="weather-city-label">📍 ${city.name}</span><button type="button" class="btn btn-ghost btn-small" id="weather-change">Changer</button></div>`;
     const strip = document.createElement("div");
     strip.className = "weather-strip";
     strip.innerHTML = '<span class="muted">Chargement de la météo…</span>';
