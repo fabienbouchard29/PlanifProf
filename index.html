@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PlanifProf</title>
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("planifprof.theme");
+        if (t) document.documentElement.setAttribute("data-theme", JSON.parse(t));
+      } catch (e) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -55,6 +63,7 @@
 
   <footer class="app-footer">
     <p>Vos données sont sauvegardées dans ce navigateur. Utilisez l'onglet Compte pour exporter/importer une sauvegarde entre appareils.</p>
+    <button type="button" class="footer-link" id="about-link">ℹ️ À propos de PlanifProf</button>
   </footer>
 
   <div class="onboarding-overlay" id="landing-overlay">
@@ -147,6 +156,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/storage.js"></script>
+  <script src="js/theme.js"></script>
   <script src="js/subjects.js"></script>
   <script src="js/config.js"></script>
   <script src="js/calendar-import.js"></script>

@@ -99,10 +99,13 @@
 
   function handleEntryScreen(user) {
     if (user) {
+      // Already connected (session persisted) — go straight to the Agenda, no landing page.
       Landing.close();
       return;
     }
-    if (!Config.getConfig()) Landing.open();
+    // Not connected — always show the landing page (it adapts its own content
+    // depending on whether this device already has local data).
+    Landing.open();
   }
 
   function watchAuthForEntryScreen() {
@@ -111,9 +114,12 @@
     } else {
       setTimeout(() => {
         if (window.FirebaseSync) FirebaseSync.onAuthChange(handleEntryScreen);
-        else if (Onboarding.shouldShowOnboarding()) Onboarding.open();
+        else Landing.open(); // Firebase failed to load — still offer the landing page for local-only use
       }, 1500);
     }
   }
   watchAuthForEntryScreen();
+
+  const aboutLink = document.getElementById("about-link");
+  if (aboutLink) aboutLink.addEventListener("click", () => Landing.open());
 })();
