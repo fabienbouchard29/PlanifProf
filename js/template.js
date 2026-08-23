@@ -265,8 +265,8 @@
       const copyBtn = document.createElement("button");
       copyBtn.type = "button";
       copyBtn.className = "btn btn-ghost btn-small";
-      copyBtn.textContent = "Copier →";
-      copyBtn.title = "Copier ces périodes vers tous les autres jours";
+      copyBtn.textContent = "Copier les heures →";
+      copyBtn.title = "Copier les heures des périodes et des pauses vers tous les autres jours (les matières ne sont pas copiées)";
       copyBtn.addEventListener("click", () => {
         copyPeriodsToAll(cfg, day);
         render(container);
