@@ -45,7 +45,17 @@
     });
   });
 
+  let lastLocalEditAt = 0;
+  window.addEventListener("store-set", () => {
+    lastLocalEditAt = Date.now();
+  });
+
   document.addEventListener("cloud-data-changed", () => {
+    // Skip: (1) echoes of our own very-recent edit bouncing back from the sync round-trip,
+    // (2) the settings screen, which has open/closed panels that a full re-render would collapse.
+    if (Date.now() - lastLocalEditAt < 2500) return;
+    const activeView = document.querySelector(".view.active");
+    if (activeView && activeView.id === "view-horaire") return;
     rerenderCurrentView();
   });
 

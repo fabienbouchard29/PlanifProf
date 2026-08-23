@@ -11,19 +11,19 @@
 </head>
 <body>
   <header class="app-topbar">
-    <button type="button" class="brand main-tab active" data-view="view-calendrier" id="brand-home-btn" title="Agenda (accueil)">
+    <button type="button" class="brand main-tab active" data-view="view-calendrier" id="brand-home-btn" title="Agenda (accueil)" aria-label="Agenda (accueil)">
       <span class="brand-mark">📘</span>
       <span class="brand-name">PlanifProf</span>
     </button>
     <nav class="main-nav">
-      <button class="main-tab" data-view="view-eleves"><span class="tab-icon">🧑‍🎓</span>Élèves</button>
-      <button class="main-tab" data-view="view-ressources"><span class="tab-icon">📚</span>Ressources</button>
+      <button class="main-tab" data-view="view-eleves"><span class="tab-icon" aria-hidden="true">🧑‍🎓</span>Élèves</button>
+      <button class="main-tab" data-view="view-ressources"><span class="tab-icon" aria-hidden="true">📚</span>Ressources</button>
     </nav>
-    <button type="button" class="main-tab icon-button" data-view="view-horaire" id="settings-button" title="Paramètres de l'horaire et des outils">
-      <span class="tab-icon">⚙️</span>
+    <button type="button" class="main-tab icon-button" data-view="view-horaire" id="settings-button" title="Paramètres de l'horaire et des outils" aria-label="Paramètres de l'horaire et des outils">
+      <span class="tab-icon" aria-hidden="true">⚙️</span>
     </button>
-    <button type="button" class="main-tab account-button" data-view="view-compte" id="account-button" title="Compte">
-      <span class="account-avatar" id="account-avatar">👤</span>
+    <button type="button" class="main-tab account-button" data-view="view-compte" id="account-button" title="Compte" aria-label="Compte">
+      <span class="account-avatar" id="account-avatar" aria-hidden="true">👤</span>
       <span class="sync-dot" id="sync-status" title="Non connecté — données locales seulement"></span>
     </button>
   </header>

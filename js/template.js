@@ -127,15 +127,6 @@
     wizardBar.querySelector("#wizard-shortcut-btn").addEventListener("click", () => Onboarding.open());
     container.appendChild(wizardBar);
 
-    const MODULE_OPTIONS = [
-      { key: "meteo", label: "🌦️ Météo", desc: "Un petit résumé météo dans l'Agenda." },
-      { key: "presences", label: "✅ Présences", desc: "Prendre les présences par groupe, jour par jour." },
-      { key: "evaluations", label: "📝 Évaluations", desc: "Noter vos élèves pour chaque évaluation." },
-      { key: "equipes", label: "🤝 Équipes équilibrées", desc: "Former des équipes automatiquement." },
-      { key: "pigeage", label: "🎲 Pige au hasard", desc: "Choisir un élève au hasard en classe." },
-      { key: "ressources", label: "📚 Banque de ressources", desc: "Garder vos ressources d'une année à l'autre." },
-      { key: "ocr", label: "📷 Importer une photo", desc: "Reconnaître le texte d'un horaire papier pris en photo." },
-    ];
     const modulesSection = document.createElement("details");
     modulesSection.className = "settings-panel";
     modulesSection.innerHTML = `<summary>Outils</summary>`;
@@ -143,7 +134,7 @@
     modulesBody.className = "onboarding-modules";
     modulesBody.style.marginTop = "0.75rem";
     const currentModules = Modules.get();
-    modulesBody.innerHTML = MODULE_OPTIONS.map(
+    modulesBody.innerHTML = Modules.OPTIONS.map(
       (m) => `
       <label class="onboarding-module-row">
         <input type="checkbox" data-module="${m.key}" ${currentModules[m.key] ? "checked" : ""} />

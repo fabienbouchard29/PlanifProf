@@ -1,14 +1,4 @@
 (function () {
-  const MODULE_OPTIONS = [
-    { key: "meteo", label: "🌦️ Météo", desc: "Un petit résumé météo, pratique pour les sorties extérieures." },
-    { key: "presences", label: "✅ Présences", desc: "Prendre les présences par groupe, jour par jour." },
-    { key: "evaluations", label: "📝 Évaluations", desc: "Noter vos élèves pour chaque évaluation." },
-    { key: "equipes", label: "🤝 Équipes équilibrées", desc: "Former des équipes automatiquement." },
-    { key: "pigeage", label: "🎲 Pige au hasard", desc: "Choisir un élève au hasard en classe." },
-    { key: "ressources", label: "📚 Banque de ressources", desc: "Garder vos ressources d'une année à l'autre." },
-    { key: "ocr", label: "📷 Importer une photo", desc: "Prendre en photo un horaire papier pour en récupérer le texte." },
-  ];
-
   let answers = null;
   let stepIndex = 0;
   let importSummary = null;
@@ -160,7 +150,7 @@
       <h2>Quels outils voulez-vous voir ?</h2>
       <p class="muted">Cochez ce qui vous intéresse. Vous pourrez changer d'avis n'importe quand dans l'onglet Compte.</p>
       <div class="onboarding-modules">
-        ${MODULE_OPTIONS.map(
+        ${Modules.OPTIONS.map(
           (m) => `
           <label class="onboarding-module-row">
             <input type="checkbox" data-module="${m.key}" ${answers.modules[m.key] ? "checked" : ""} />
