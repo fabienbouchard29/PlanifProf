@@ -127,34 +127,6 @@
     wizardBar.querySelector("#wizard-shortcut-btn").addEventListener("click", () => Onboarding.open());
     container.appendChild(wizardBar);
 
-    const themeSection = document.createElement("details");
-    themeSection.className = "settings-panel";
-    themeSection.innerHTML = `<summary>Apparence</summary>`;
-    const themeBody = document.createElement("div");
-    themeBody.style.marginTop = "0.75rem";
-    const currentTheme = Theme.get();
-    themeBody.innerHTML = `
-      <p class="muted" style="margin-top:0;">Choisissez le style qui vous ressemble.</p>
-      <div class="landing-theme-switch" style="justify-content:flex-start;">
-        <button type="button" class="theme-swatch ${currentTheme === "colore" ? "selected" : ""}" data-theme-choice="colore">
-          <span class="theme-swatch-dot" style="background:linear-gradient(135deg,#4f46e5,#6d5ef0)"></span>
-          Coloré
-        </button>
-        <button type="button" class="theme-swatch ${currentTheme === "serieux" ? "selected" : ""}" data-theme-choice="serieux">
-          <span class="theme-swatch-dot" style="background:#1f3a5f"></span>
-          Sérieux
-        </button>
-      </div>
-    `;
-    themeBody.querySelectorAll("[data-theme-choice]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        Theme.set(btn.dataset.themeChoice);
-        themeBody.querySelectorAll(".theme-swatch").forEach((b) => b.classList.toggle("selected", b === btn));
-      });
-    });
-    themeSection.appendChild(themeBody);
-    container.appendChild(themeSection);
-
     const settings = document.createElement("details");
     settings.className = "settings-panel";
     settings.innerHTML = `<summary>Paramètres de l'horaire</summary>`;
@@ -321,16 +293,6 @@
     });
     container.appendChild(grid);
 
-    const pickerSection = document.createElement("details");
-    pickerSection.className = "settings-panel";
-    pickerSection.innerHTML = `<summary>Marquer les jours sans école visuellement (cliquer sur un calendrier)</summary>`;
-    const pickerBody = document.createElement("div");
-    pickerSection.appendChild(pickerBody);
-    container.appendChild(pickerSection);
-    pickerSection.addEventListener("toggle", () => {
-      if (pickerSection.open) CalendarPicker.render(pickerBody);
-    });
-
     const importSection = document.createElement("details");
     importSection.className = "settings-panel";
     importSection.innerHTML = `<summary>Importer le calendrier de mon école (congés, journées pédagogiques)</summary>`;
@@ -366,6 +328,16 @@
 
     importBody.querySelector("#pdf-import-open-btn").addEventListener("click", () => PdfImport.openImportModal());
 
+    const pickerSection = document.createElement("details");
+    pickerSection.className = "settings-panel";
+    pickerSection.innerHTML = `<summary>Marquer les jours sans école visuellement (cliquer sur un calendrier)</summary>`;
+    const pickerBody = document.createElement("div");
+    pickerSection.appendChild(pickerBody);
+    container.appendChild(pickerSection);
+    pickerSection.addEventListener("toggle", () => {
+      if (pickerSection.open) CalendarPicker.render(pickerBody);
+    });
+
     const modulesSection = document.createElement("details");
     modulesSection.className = "settings-panel";
     modulesSection.innerHTML = `<summary>Outils</summary>`;
@@ -391,6 +363,34 @@
     });
     modulesSection.appendChild(modulesBody);
     container.appendChild(modulesSection);
+
+    const themeSection = document.createElement("details");
+    themeSection.className = "settings-panel";
+    themeSection.innerHTML = `<summary>Apparence</summary>`;
+    const themeBody = document.createElement("div");
+    themeBody.style.marginTop = "0.75rem";
+    const currentTheme = Theme.get();
+    themeBody.innerHTML = `
+      <p class="muted" style="margin-top:0;">Choisissez le style qui vous ressemble.</p>
+      <div class="landing-theme-switch" style="justify-content:flex-start;">
+        <button type="button" class="theme-swatch ${currentTheme === "colore" ? "selected" : ""}" data-theme-choice="colore">
+          <span class="theme-swatch-dot" style="background:linear-gradient(135deg,#4f46e5,#6d5ef0)"></span>
+          Coloré
+        </button>
+        <button type="button" class="theme-swatch ${currentTheme === "serieux" ? "selected" : ""}" data-theme-choice="serieux">
+          <span class="theme-swatch-dot" style="background:#1f3a5f"></span>
+          Sérieux
+        </button>
+      </div>
+    `;
+    themeBody.querySelectorAll("[data-theme-choice]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        Theme.set(btn.dataset.themeChoice);
+        themeBody.querySelectorAll(".theme-swatch").forEach((b) => b.classList.toggle("selected", b === btn));
+      });
+    });
+    themeSection.appendChild(themeBody);
+    container.appendChild(themeSection);
   }
 
   window.TemplateView = { render, getAssignments, keyFor };
