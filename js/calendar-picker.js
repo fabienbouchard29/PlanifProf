@@ -198,10 +198,34 @@
         <input type="month" id="cp-start-month" value="${s.startYear}-${String(s.startMonth + 1).padStart(2, "0")}" />
       </label>
       <button type="button" class="btn btn-ghost" id="cp-clear">Tout effacer</button>
+      <button type="button" class="btn btn-ghost" id="cp-qc-holidays">🍁 Ajouter les congés fériés du Québec</button>
       <span class="muted" id="cp-count"></span>
     `;
     container.appendChild(controls);
     countLabelEl = controls.querySelector("#cp-count");
+
+    controls.querySelector("#cp-qc-holidays").addEventListener("click", () => {
+      const years = new Set([s.startYear, s.startYear + 1]);
+      const candidates = Array.from(years)
+        .sort()
+        .flatMap((y) => QcHolidays.computeQuebecHolidays(y))
+        .filter((h) => !cfg.exceptions.includes(h.date));
+      if (!candidates.length) {
+        alert("Tous les congés fériés du Québec pour cette période sont déjà marqués.");
+        return;
+      }
+      const list = candidates.map((h) => `• ${h.date} — ${h.label}`).join("\n");
+      const ok = confirm(`Ajouter ces ${candidates.length} congé(s) férié(s) du Québec (type « Congé ») ?\n\n${list}`);
+      if (!ok) return;
+      candidates.forEach((h) => {
+        cfg.exceptions.push(h.date);
+        cfg.exceptionTypes[h.date] = "conge";
+      });
+      cfg.exceptions.sort();
+      Config.saveConfig(cfg);
+      document.dispatchEvent(new CustomEvent("config-changed"));
+      render(container);
+    });
 
     controls.querySelector("#cp-start-month").addEventListener("change", (e) => {
       if (!e.target.value) return;
