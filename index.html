@@ -85,6 +85,30 @@
     </div>
   </div>
 
+  <div class="modal" id="reminder-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Rappel</h3>
+        <button type="button" class="modal-close">✕</button>
+      </div>
+      <form id="reminder-form">
+        <label>Titre
+          <input type="text" name="title" placeholder="Ex. Réunion parents, anniversaire de Léa…" required />
+        </label>
+        <label>Heure (facultatif)
+          <input type="time" name="time" />
+        </label>
+        <label>Notes
+          <textarea name="notes" rows="3" placeholder="Détails…"></textarea>
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="reminder-delete">Supprimer</button>
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="modal" id="ocr-modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -129,6 +153,7 @@
   <script src="js/template.js"></script>
   <script src="js/weather.js"></script>
   <script src="js/ocr.js"></script>
+  <script src="js/reminders.js"></script>
   <script src="js/calendar.js"></script>
   <script src="js/students.js"></script>
   <script src="js/attendance.js"></script>

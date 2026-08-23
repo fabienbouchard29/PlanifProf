@@ -120,6 +120,8 @@
       Weather.render(weatherEl);
     }
 
+    Reminders.renderUpcomingWidget(container);
+
     const grid = document.createElement("div");
     grid.className = "calendar-grid";
     const events = getEvents();
@@ -135,6 +137,7 @@
       col.innerHTML = `<div class="calendar-day-header ${isToday ? "today" : ""}">${formatDayHeader(date)}${
         templateDay ? `<span class="cycle-badge">${templateDay.label}</span>` : ""
       }</div>`;
+      Reminders.renderDayReminders(col, dIso);
       if (!templateDay || !templateDay.periods.length) {
         const empty = document.createElement("div");
         empty.className = "calendar-empty";
