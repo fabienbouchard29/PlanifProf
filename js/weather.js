@@ -95,5 +95,5 @@
       });
   }
 
-  window.Weather = { render };
+  window.Weather = { render, getCity, saveCity, geocode };
 })();

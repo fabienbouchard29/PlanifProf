@@ -28,10 +28,11 @@
   function ensureConfig() {
     let cfg = getConfig();
     if (!cfg) {
-      cfg = { mode: "weekday", cycleLength: 9, cycleStartDate: "", exceptions: [], days: buildDefaultDays("weekday") };
+      cfg = { mode: "weekday", cycleLength: 9, cycleStartDate: "", exceptions: [], cycleOverrides: {}, days: buildDefaultDays("weekday") };
       saveConfig(cfg);
     }
     if (!cfg.exceptions) cfg.exceptions = [];
+    if (!cfg.cycleOverrides) cfg.cycleOverrides = {};
     return cfg;
   }
 
@@ -50,6 +51,10 @@
     const cfg = getConfig();
     if (!cfg) return null;
     const iso = toISODate(date);
+
+    if (cfg.cycleOverrides && Object.prototype.hasOwnProperty.call(cfg.cycleOverrides, iso)) {
+      return cfg.days[cfg.cycleOverrides[iso]] || null;
+    }
 
     if (cfg.mode === "weekday") {
       const dow = date.getDay();

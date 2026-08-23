@@ -106,9 +106,19 @@ function onAuthChange(cb) {
 }
 
 function updateBadge(user) {
-  const el = document.getElementById("sync-status");
-  if (!el) return;
-  el.textContent = user ? `Connecté (${user.email || "compte Google"}) — synchronisé` : "Non connecté — données locales seulement";
+  const dot = document.getElementById("sync-status");
+  const avatar = document.getElementById("account-avatar");
+  const button = document.getElementById("account-button");
+  if (dot) {
+    dot.title = user ? `Connecté (${user.email || "compte Google"}) — synchronisé` : "Non connecté — données locales seulement";
+    dot.classList.toggle("connected", !!user);
+  }
+  if (avatar) {
+    avatar.textContent = user && user.email ? user.email[0].toUpperCase() : "👤";
+  }
+  if (button) {
+    button.title = user ? `Compte — ${user.email || "compte Google"}` : "Compte (non connecté)";
+  }
 }
 
 onAuthStateChanged(auth, (user) => {

@@ -83,7 +83,7 @@
       <button type="button" class="btn btn-ghost" id="cal-prev">◀ Semaine précédente</button>
       <button type="button" class="btn btn-ghost" id="cal-today">Aujourd'hui</button>
       <button type="button" class="btn btn-ghost" id="cal-next">Semaine suivante ▶</button>
-      <button type="button" class="btn btn-primary" id="cal-import-photo">📷 Importer une photo</button>
+      ${Modules.isEnabled("ocr") ? '<button type="button" class="btn btn-primary" id="cal-import-photo">📷 Importer une photo</button>' : ""}
     `;
     container.appendChild(nav);
     nav.querySelector("#cal-prev").addEventListener("click", () => {
@@ -98,12 +98,15 @@
       weekStart = startOfWeek(new Date());
       render(container);
     });
-    nav.querySelector("#cal-import-photo").addEventListener("click", () => Ocr.openImportModal());
+    const importBtn = nav.querySelector("#cal-import-photo");
+    if (importBtn) importBtn.addEventListener("click", () => Ocr.openImportModal());
 
-    const weatherEl = document.createElement("div");
-    weatherEl.id = "weather-widget";
-    container.appendChild(weatherEl);
-    Weather.render(weatherEl);
+    if (Modules.isEnabled("meteo")) {
+      const weatherEl = document.createElement("div");
+      weatherEl.id = "weather-widget";
+      container.appendChild(weatherEl);
+      Weather.render(weatherEl);
+    }
 
     const grid = document.createElement("div");
     grid.className = "calendar-grid";

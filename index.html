@@ -10,22 +10,22 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="app-header">
+  <header class="app-topbar">
     <div class="brand">
       <span class="brand-mark">📘</span>
-      <h1>PlanifProf</h1>
+      <span class="brand-name">PlanifProf</span>
     </div>
-    <p class="subtitle">Le planificateur numérique flexible pour enseignants</p>
-    <p id="sync-status" class="sync-status muted"></p>
+    <nav class="main-nav">
+      <button class="main-tab active" data-view="view-horaire"><span class="tab-icon">🗓️</span>Horaire</button>
+      <button class="main-tab" data-view="view-calendrier"><span class="tab-icon">📅</span>Calendrier</button>
+      <button class="main-tab" data-view="view-eleves"><span class="tab-icon">🧑‍🎓</span>Élèves</button>
+      <button class="main-tab" data-view="view-ressources"><span class="tab-icon">📚</span>Ressources</button>
+    </nav>
+    <button type="button" class="main-tab account-button" data-view="view-compte" id="account-button" title="Compte">
+      <span class="account-avatar" id="account-avatar">👤</span>
+      <span class="sync-dot" id="sync-status" title="Non connecté — données locales seulement"></span>
+    </button>
   </header>
-
-  <nav class="main-nav">
-    <button class="main-tab active" data-view="view-horaire"><span class="tab-icon">🗓️</span>Horaire</button>
-    <button class="main-tab" data-view="view-calendrier"><span class="tab-icon">📅</span>Calendrier</button>
-    <button class="main-tab" data-view="view-eleves"><span class="tab-icon">🧑‍🎓</span>Élèves</button>
-    <button class="main-tab" data-view="view-ressources"><span class="tab-icon">📚</span>Ressources</button>
-    <button class="main-tab" data-view="view-compte"><span class="tab-icon">👤</span>Compte</button>
-  </nav>
 
   <main class="views">
     <section class="view active" id="view-horaire"></section>
@@ -53,6 +53,10 @@
   <footer class="app-footer">
     <p>Vos données sont sauvegardées dans ce navigateur. Utilisez l'onglet Compte pour exporter/importer une sauvegarde entre appareils.</p>
   </footer>
+
+  <div class="onboarding-overlay" id="onboarding-overlay">
+    <div class="onboarding-card" id="onboarding-card"></div>
+  </div>
 
   <div class="modal" id="event-modal">
     <div class="modal-content">
@@ -96,6 +100,8 @@
   <script src="js/storage.js"></script>
   <script src="js/subjects.js"></script>
   <script src="js/config.js"></script>
+  <script src="js/calendar-import.js"></script>
+  <script src="js/modules.js"></script>
   <script src="js/template.js"></script>
   <script src="js/weather.js"></script>
   <script src="js/ocr.js"></script>
@@ -107,6 +113,7 @@
   <script src="js/resources.js"></script>
   <script src="js/exports.js"></script>
   <script src="js/account.js"></script>
+  <script src="js/onboarding.js"></script>
   <script src="js/app.js"></script>
   <script type="module" src="js/firebase-sync.js"></script>
 </body>

@@ -95,6 +95,16 @@
 
     renderAuthBox(container);
 
+    const wizardBox = document.createElement("div");
+    wizardBox.className = "account-plan-box";
+    wizardBox.innerHTML = `
+      <h3>Assistant de configuration</h3>
+      <p class="muted">Reconfigurez votre horaire (jours ou cycle, périodes) et les outils activés en quelques questions.</p>
+      <button type="button" class="btn btn-ghost" id="relaunch-wizard">🧭 Relancer l'assistant</button>
+    `;
+    wizardBox.querySelector("#relaunch-wizard").addEventListener("click", () => Onboarding.open());
+    container.appendChild(wizardBox);
+
     const planBox = document.createElement("div");
     planBox.className = "account-plan-box";
     planBox.innerHTML = `

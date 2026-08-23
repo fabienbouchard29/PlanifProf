@@ -44,5 +44,48 @@
     });
   });
 
+  document.addEventListener("cloud-data-changed", () => {
+    rerenderCurrentView();
+  });
+
+  const MODULE_TAB_MAP = {
+    ressources: '[data-view="view-ressources"]',
+    evaluations: '[data-subview="sub-evaluations"]',
+    equipes: '[data-subview="sub-equipes"]',
+    pigeage: '[data-subview="sub-pigeage"]',
+  };
+
+  function applyModuleVisibility() {
+    Object.entries(MODULE_TAB_MAP).forEach(([moduleKey, selector]) => {
+      const el = document.querySelector(selector);
+      if (!el) return;
+      el.style.display = Modules.isEnabled(moduleKey) ? "" : "none";
+    });
+
+    const activeTab = document.querySelector(".main-tab.active");
+    if (activeTab && activeTab.style.display === "none") {
+      const firstVisible = Array.from(tabs).find((t) => t.style.display !== "none");
+      if (firstVisible) showView(firstVisible.dataset.view);
+    }
+    const activeSubTab = document.querySelector(".sub-tab.active");
+    if (activeSubTab && activeSubTab.style.display === "none") {
+      const firstVisibleSub = Array.from(subTabs).find((t) => t.style.display !== "none");
+      if (firstVisibleSub) showSubView(firstVisibleSub.dataset.subview);
+    }
+  }
+
+  function rerenderCurrentView() {
+    const activeView = document.querySelector(".view.active");
+    if (activeView) renderActive(activeView.id);
+  }
+
+  window.applyModuleVisibility = applyModuleVisibility;
+  window.rerenderCurrentView = rerenderCurrentView;
+
+  applyModuleVisibility();
   showView("view-horaire");
+
+  if (Onboarding.shouldShowOnboarding()) {
+    Onboarding.open();
+  }
 })();

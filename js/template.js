@@ -140,6 +140,37 @@
       document.dispatchEvent(new CustomEvent("config-changed"));
     });
 
+    const importSection = document.createElement("details");
+    importSection.className = "settings-panel";
+    importSection.innerHTML = `<summary>Importer le calendrier de mon école (congés, journées pédagogiques)</summary>`;
+    const importBody = document.createElement("div");
+    importBody.className = "settings-body";
+    importBody.innerHTML = `
+      <p class="muted" style="flex-basis:100%">Si votre centre de services scolaire fournit un fichier .ics, vous pouvez l'importer ici pour ajouter automatiquement les congés et journées pédagogiques (et détecter votre cycle, si le fichier l'indique).</p>
+      <input type="file" id="ics-file-input" accept=".ics,text/calendar" />
+      <div id="ics-import-result" style="flex-basis:100%"></div>
+    `;
+    importSection.appendChild(importBody);
+    container.appendChild(importSection);
+
+    importBody.querySelector("#ics-file-input").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const text = await file.text();
+      const events = CalendarImport.parseICS(text);
+      const result = CalendarImport.classify(events);
+      const resultBox = importBody.querySelector("#ics-import-result");
+      resultBox.innerHTML = `
+        <p>${result.exceptions.length} congé(s)/journée(s) pédagogique(s) trouvé(s) dans le fichier.</p>
+        <p>${result.cycleDetected ? `Un cycle de ${result.cycleLength} jours a été détecté.` : "Aucun cycle détecté — seuls les congés seront ajoutés."}</p>
+        <button type="button" class="btn btn-primary" id="ics-apply">Ajouter à mon horaire</button>
+      `;
+      resultBox.querySelector("#ics-apply").addEventListener("click", () => {
+        CalendarImport.applyImport(result);
+        render(container);
+      });
+    });
+
     const subjectsSection = document.createElement("details");
     subjectsSection.className = "settings-panel";
     subjectsSection.innerHTML = `<summary>Matières et groupes (couleurs)</summary>`;
