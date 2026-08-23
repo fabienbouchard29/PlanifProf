@@ -937,6 +937,39 @@ h1, h2, h3, h4 {
   box-shadow: var(--shadow-lg);
 }
 
+.modal-content-wide {
+  max-width: 600px;
+}
+
+.pdf-candidate-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0.75rem 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.pdf-candidate-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.pdf-candidate-row:hover {
+  background: var(--bg);
+}
+
+.pdf-candidate-row input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;

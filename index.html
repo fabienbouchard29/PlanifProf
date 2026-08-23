@@ -95,12 +95,31 @@
     </div>
   </div>
 
+  <div class="modal" id="pdf-import-modal">
+    <div class="modal-content modal-content-wide">
+      <div class="modal-header">
+        <h3>Importer un calendrier scolaire (PDF)</h3>
+        <button type="button" class="modal-close">✕</button>
+      </div>
+      <p class="muted">On va lire le PDF et essayer de repérer les congés, journées pédagogiques et numéros de cycle. Vérifiez toujours la liste avant de l'appliquer — la mise en page des calendriers varie beaucoup d'une école à l'autre.</p>
+      <input type="file" id="pdf-file-input" accept="application/pdf" />
+      <p id="pdf-import-status" class="muted"></p>
+      <div id="pdf-import-results" class="pdf-candidate-list"></div>
+      <details class="settings-panel" style="margin-top:0.75rem;">
+        <summary>Texte brut extrait (pour vérifier ou copier manuellement)</summary>
+        <textarea id="pdf-raw-text" rows="8" readonly style="width:100%; margin-top:0.5rem;"></textarea>
+      </details>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/subjects.js"></script>
   <script src="js/config.js"></script>
   <script src="js/calendar-import.js"></script>
+  <script src="js/pdf-import.js"></script>
   <script src="js/modules.js"></script>
   <script src="js/template.js"></script>
   <script src="js/weather.js"></script>

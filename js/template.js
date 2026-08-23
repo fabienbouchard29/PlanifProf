@@ -149,6 +149,8 @@
       <p class="muted" style="flex-basis:100%">Si votre centre de services scolaire fournit un fichier .ics, vous pouvez l'importer ici pour ajouter automatiquement les congés et journées pédagogiques (et détecter votre cycle, si le fichier l'indique).</p>
       <input type="file" id="ics-file-input" accept=".ics,text/calendar" />
       <div id="ics-import-result" style="flex-basis:100%"></div>
+      <p class="muted" style="flex-basis:100%; margin-top:0.5rem;">Vous avez seulement un PDF (calendrier scolaire papier numérisé) ? On peut essayer de le lire aussi — moins fiable, à vérifier avant d'appliquer.</p>
+      <button type="button" class="btn btn-ghost" id="pdf-import-open-btn" style="flex-basis:100%">📄 Importer un calendrier PDF</button>
     `;
     importSection.appendChild(importBody);
     container.appendChild(importSection);
@@ -170,6 +172,8 @@
         render(container);
       });
     });
+
+    importBody.querySelector("#pdf-import-open-btn").addEventListener("click", () => PdfImport.openImportModal());
 
     const subjectsSection = document.createElement("details");
     subjectsSection.className = "settings-panel";
