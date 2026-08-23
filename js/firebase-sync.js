@@ -32,9 +32,37 @@ let unsubscribeStudents = null;
 let applyingRemote = false;
 let pushTimer = null;
 let lastKnownStudents = null;
+let lastKnownDocIdMap = {};
 
 function studentsCollectionRef(uid) {
   return collection(db, "users", uid, "eleves");
+}
+
+// Firestore document IDs must not contain "/", be exactly "." or "..", or match __*__.
+function sanitizeForDocId(name) {
+  let s = (name || "").trim().replace(/\//g, "-");
+  if (!s || s === "." || s === "..") s = "élève";
+  if (/^__.*__$/.test(s)) s = "_" + s;
+  return s;
+}
+
+// Uses the student's name as the document ID (for a readable Firestore console),
+// adding a numeric suffix only when two students share the same name.
+function computeDocIdMap(students) {
+  const used = new Set();
+  const map = {};
+  students.forEach((s) => {
+    const base = sanitizeForDocId(s.name);
+    let docId = base;
+    let n = 2;
+    while (used.has(docId)) {
+      docId = `${base}-${n}`;
+      n++;
+    }
+    used.add(docId);
+    map[s.id] = docId;
+  });
+  return map;
 }
 
 function collectLocalData() {
@@ -75,13 +103,20 @@ function applyRemoteData(data) {
 
 async function syncStudentsToFirestore(uid, students) {
   const ref = studentsCollectionRef(uid);
-  const prevIds = new Set((lastKnownStudents || []).map((s) => s.id));
+  const prevDocIdMap = lastKnownDocIdMap;
+  const nextDocIdMap = computeDocIdMap(students);
+  const nextInternalIds = new Set(students.map((s) => s.id));
+
   lastKnownStudents = students;
-  const nextIds = new Set(students.map((s) => s.id));
-  const writes = students.map((s) => setDoc(doc(ref, s.id), s));
-  prevIds.forEach((id) => {
-    if (!nextIds.has(id)) writes.push(deleteDoc(doc(ref, id)));
+  lastKnownDocIdMap = nextDocIdMap;
+
+  const writes = students.map((s) => setDoc(doc(ref, nextDocIdMap[s.id]), s));
+  Object.entries(prevDocIdMap).forEach(([internalId, oldDocId]) => {
+    const stillExists = nextInternalIds.has(internalId);
+    const renamed = stillExists && nextDocIdMap[internalId] !== oldDocId;
+    if (!stillExists || renamed) writes.push(deleteDoc(doc(ref, oldDocId)));
   });
+
   try {
     await Promise.all(writes);
   } catch (e) {
@@ -131,6 +166,7 @@ onAuthStateChanged(auth, (user) => {
     unsubscribeStudents = null;
   }
   lastKnownStudents = null;
+  lastKnownDocIdMap = {};
 
   if (user) {
     const ref = doc(db, "users", user.uid);
@@ -143,16 +179,22 @@ onAuthStateChanged(auth, (user) => {
     });
 
     unsubscribeStudents = onSnapshot(studentsCollectionRef(user.uid), (snap) => {
-      const remoteStudents = snap.docs.map((d) => d.data());
-      if (remoteStudents.length === 0) {
+      if (snap.empty) {
         const local = Store.get("students", []);
         if (local.length > 0) {
           lastKnownStudents = [];
+          lastKnownDocIdMap = {};
           syncStudentsToFirestore(user.uid, local);
           return;
         }
       }
+      const remoteStudents = snap.docs.map((d) => d.data());
+      const docIdMap = {};
+      snap.docs.forEach((d) => {
+        docIdMap[d.data().id] = d.id;
+      });
       lastKnownStudents = remoteStudents;
+      lastKnownDocIdMap = docIdMap;
       applyingRemote = true;
       Store.set("students", remoteStudents, { silent: true });
       applyingRemote = false;
