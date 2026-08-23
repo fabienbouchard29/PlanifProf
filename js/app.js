@@ -38,9 +38,6 @@
   tabs.forEach((t) => t.addEventListener("click", () => showView(t.dataset.view)));
   subTabs.forEach((t) => t.addEventListener("click", () => showSubView(t.dataset.subview)));
 
-  const brandBtn = document.getElementById("brand-home-btn");
-  if (brandBtn) brandBtn.addEventListener("click", () => showView("view-calendrier"));
-
   ["config-changed", "template-changed", "subjects-changed"].forEach((evt) => {
     document.addEventListener(evt, () => {
       const activeView = document.querySelector(".view.active");

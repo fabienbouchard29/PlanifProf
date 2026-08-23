@@ -52,22 +52,32 @@ h1, h2, h3, h4 {
   flex-wrap: wrap;
 }
 
-.brand {
+.main-tab.brand {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
   flex-shrink: 0;
   border: none;
   background: none;
-  padding: 0.25rem 0.35rem;
+  padding: 0.25rem 0.5rem;
   margin-left: -0.35rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background 0.15s ease;
+  box-shadow: none;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
-.brand:hover {
+.main-tab.brand:hover {
   background: var(--bg);
+  transform: none;
+  box-shadow: none;
+}
+
+.main-tab.brand.active {
+  background: var(--primary-soft);
+  color: inherit;
+  box-shadow: none;
+  border: none;
 }
 
 .brand-mark {
