@@ -127,32 +127,6 @@
     wizardBar.querySelector("#wizard-shortcut-btn").addEventListener("click", () => Onboarding.open());
     container.appendChild(wizardBar);
 
-    const modulesSection = document.createElement("details");
-    modulesSection.className = "settings-panel";
-    modulesSection.innerHTML = `<summary>Outils</summary>`;
-    const modulesBody = document.createElement("div");
-    modulesBody.className = "onboarding-modules";
-    modulesBody.style.marginTop = "0.75rem";
-    const currentModules = Modules.get();
-    modulesBody.innerHTML = Modules.OPTIONS.map(
-      (m) => `
-      <label class="onboarding-module-row">
-        <input type="checkbox" data-module="${m.key}" ${currentModules[m.key] ? "checked" : ""} />
-        <span><strong>${m.label}</strong><br /><span class="muted">${m.desc}</span></span>
-      </label>
-    `
-    ).join("");
-    modulesBody.querySelectorAll("[data-module]").forEach((el) => {
-      el.addEventListener("change", () => {
-        const updated = Modules.get();
-        updated[el.dataset.module] = el.checked;
-        Modules.save(updated);
-        if (window.applyModuleVisibility) window.applyModuleVisibility();
-      });
-    });
-    modulesSection.appendChild(modulesBody);
-    container.appendChild(modulesSection);
-
     const settings = document.createElement("details");
     settings.className = "settings-panel";
     settings.innerHTML = `<summary>Paramètres de l'horaire</summary>`;
@@ -200,50 +174,6 @@
         document.dispatchEvent(new CustomEvent("config-changed"));
       });
     }
-    const importSection = document.createElement("details");
-    importSection.className = "settings-panel";
-    importSection.innerHTML = `<summary>Importer le calendrier de mon école (congés, journées pédagogiques)</summary>`;
-    const importBody = document.createElement("div");
-    importBody.className = "settings-body";
-    importBody.innerHTML = `
-      <p class="muted" style="flex-basis:100%">Si votre centre de services scolaire fournit un fichier .ics, vous pouvez l'importer ici pour ajouter automatiquement les congés et journées pédagogiques (et détecter votre cycle, si le fichier l'indique).</p>
-      <input type="file" id="ics-file-input" accept=".ics,text/calendar" />
-      <div id="ics-import-result" style="flex-basis:100%"></div>
-      <p class="muted" style="flex-basis:100%; margin-top:0.5rem;">Vous avez seulement un PDF (calendrier scolaire papier numérisé) ? On peut essayer de le lire aussi — moins fiable, à vérifier avant d'appliquer.</p>
-      <button type="button" class="btn btn-ghost" id="pdf-import-open-btn" style="flex-basis:100%">📄 Importer un calendrier PDF</button>
-    `;
-    importSection.appendChild(importBody);
-    container.appendChild(importSection);
-
-    importBody.querySelector("#ics-file-input").addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const text = await file.text();
-      const events = CalendarImport.parseICS(text);
-      const result = CalendarImport.classify(events);
-      const resultBox = importBody.querySelector("#ics-import-result");
-      resultBox.innerHTML = `
-        <p>${result.exceptions.length} congé(s)/journée(s) pédagogique(s) trouvé(s) dans le fichier.</p>
-        <p>${result.cycleDetected ? `Un cycle de ${result.cycleLength} jours a été détecté.` : "Aucun cycle détecté — seuls les congés seront ajoutés."}</p>
-        <button type="button" class="btn btn-primary" id="ics-apply">Ajouter à mon horaire</button>
-      `;
-      resultBox.querySelector("#ics-apply").addEventListener("click", () => {
-        CalendarImport.applyImport(result);
-        render(container);
-      });
-    });
-
-    importBody.querySelector("#pdf-import-open-btn").addEventListener("click", () => PdfImport.openImportModal());
-
-    const pickerSection = document.createElement("details");
-    pickerSection.className = "settings-panel";
-    pickerSection.innerHTML = `<summary>Marquer les jours sans école visuellement (cliquer sur un calendrier)</summary>`;
-    const pickerBody = document.createElement("div");
-    pickerSection.appendChild(pickerBody);
-    container.appendChild(pickerSection);
-    pickerSection.addEventListener("toggle", () => {
-      if (pickerSection.open) CalendarPicker.render(pickerBody);
-    });
 
     const subjectsSection = document.createElement("details");
     subjectsSection.className = "settings-panel";
@@ -362,6 +292,77 @@
       grid.appendChild(col);
     });
     container.appendChild(grid);
+
+    const pickerSection = document.createElement("details");
+    pickerSection.className = "settings-panel";
+    pickerSection.innerHTML = `<summary>Marquer les jours sans école visuellement (cliquer sur un calendrier)</summary>`;
+    const pickerBody = document.createElement("div");
+    pickerSection.appendChild(pickerBody);
+    container.appendChild(pickerSection);
+    pickerSection.addEventListener("toggle", () => {
+      if (pickerSection.open) CalendarPicker.render(pickerBody);
+    });
+
+    const importSection = document.createElement("details");
+    importSection.className = "settings-panel";
+    importSection.innerHTML = `<summary>Importer le calendrier de mon école (congés, journées pédagogiques)</summary>`;
+    const importBody = document.createElement("div");
+    importBody.className = "settings-body";
+    importBody.innerHTML = `
+      <p class="muted" style="flex-basis:100%">Si votre centre de services scolaire fournit un fichier .ics, vous pouvez l'importer ici pour ajouter automatiquement les congés et journées pédagogiques (et détecter votre cycle, si le fichier l'indique).</p>
+      <input type="file" id="ics-file-input" accept=".ics,text/calendar" />
+      <div id="ics-import-result" style="flex-basis:100%"></div>
+      <p class="muted" style="flex-basis:100%; margin-top:0.5rem;">Vous avez seulement un PDF (calendrier scolaire papier numérisé) ? On peut essayer de le lire aussi — moins fiable, à vérifier avant d'appliquer.</p>
+      <button type="button" class="btn btn-ghost" id="pdf-import-open-btn" style="flex-basis:100%">📄 Importer un calendrier PDF</button>
+    `;
+    importSection.appendChild(importBody);
+    container.appendChild(importSection);
+
+    importBody.querySelector("#ics-file-input").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const text = await file.text();
+      const events = CalendarImport.parseICS(text);
+      const result = CalendarImport.classify(events);
+      const resultBox = importBody.querySelector("#ics-import-result");
+      resultBox.innerHTML = `
+        <p>${result.exceptions.length} congé(s)/journée(s) pédagogique(s) trouvé(s) dans le fichier.</p>
+        <p>${result.cycleDetected ? `Un cycle de ${result.cycleLength} jours a été détecté.` : "Aucun cycle détecté — seuls les congés seront ajoutés."}</p>
+        <button type="button" class="btn btn-primary" id="ics-apply">Ajouter à mon horaire</button>
+      `;
+      resultBox.querySelector("#ics-apply").addEventListener("click", () => {
+        CalendarImport.applyImport(result);
+        render(container);
+      });
+    });
+
+    importBody.querySelector("#pdf-import-open-btn").addEventListener("click", () => PdfImport.openImportModal());
+
+    const modulesSection = document.createElement("details");
+    modulesSection.className = "settings-panel";
+    modulesSection.innerHTML = `<summary>Outils</summary>`;
+    const modulesBody = document.createElement("div");
+    modulesBody.className = "onboarding-modules";
+    modulesBody.style.marginTop = "0.75rem";
+    const currentModules = Modules.get();
+    modulesBody.innerHTML = Modules.OPTIONS.map(
+      (m) => `
+      <label class="onboarding-module-row">
+        <input type="checkbox" data-module="${m.key}" ${currentModules[m.key] ? "checked" : ""} />
+        <span><strong>${m.label}</strong><br /><span class="muted">${m.desc}</span></span>
+      </label>
+    `
+    ).join("");
+    modulesBody.querySelectorAll("[data-module]").forEach((el) => {
+      el.addEventListener("change", () => {
+        const updated = Modules.get();
+        updated[el.dataset.module] = el.checked;
+        Modules.save(updated);
+        if (window.applyModuleVisibility) window.applyModuleVisibility();
+      });
+    });
+    modulesSection.appendChild(modulesBody);
+    container.appendChild(modulesSection);
   }
 
   window.TemplateView = { render, getAssignments, keyFor };
