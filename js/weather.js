@@ -47,7 +47,8 @@
     return d.toISOString().slice(0, 10);
   }
 
-  function render(container, weekStart) {
+  function render(container, weekStart, dayCount) {
+    dayCount = dayCount || 7;
     const city = getCity();
     container.innerHTML = "";
     const box = document.createElement("div");
@@ -80,12 +81,13 @@
     const strip = document.createElement("div");
     strip.className = "weather-strip";
     strip.innerHTML = '<span class="muted">Chargement de la météo…</span>';
+    strip.style.gridTemplateColumns = `repeat(${dayCount}, 1fr)`;
     box.appendChild(strip);
     container.appendChild(box);
 
     box.querySelector("#weather-change").addEventListener("click", () => {
       saveCity(null);
-      render(container, weekStart);
+      render(container, weekStart, dayCount);
     });
 
     const start = weekStart || new Date();
@@ -94,7 +96,7 @@
       .then((data) => {
         strip.innerHTML = "";
         const days = (data.daily && data.daily.time) || [];
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < dayCount; i++) {
           const d = new Date(start);
           d.setDate(d.getDate() + i);
           const dIso = iso(d);

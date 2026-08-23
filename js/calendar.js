@@ -84,9 +84,12 @@
   function render(container) {
     container.innerHTML = "";
 
+    const showWeekends = Store.get("showWeekends", true);
+    const dayCount = showWeekends ? 7 : 5;
+
     const rangeLabel = document.createElement("h3");
     rangeLabel.className = "calendar-range-label";
-    rangeLabel.textContent = formatRangeLabel(weekStart, addDays(weekStart, 6));
+    rangeLabel.textContent = formatRangeLabel(weekStart, addDays(weekStart, dayCount - 1));
     container.appendChild(rangeLabel);
 
     const nav = document.createElement("div");
@@ -95,6 +98,7 @@
       <button type="button" class="btn btn-ghost" id="cal-prev">◀ Semaine précédente</button>
       <button type="button" class="btn btn-ghost" id="cal-today">Aujourd'hui</button>
       <button type="button" class="btn btn-ghost" id="cal-next">Semaine suivante ▶</button>
+      <label class="weekend-toggle"><input type="checkbox" id="cal-show-weekends" ${showWeekends ? "checked" : ""} /> Fins de semaine</label>
       ${Modules.isEnabled("ocr") ? '<button type="button" class="btn btn-primary" id="cal-import-photo">📷 Importer une photo</button>' : ""}
     `;
     container.appendChild(nav);
@@ -110,6 +114,10 @@
       weekStart = startOfWeek(new Date());
       render(container);
     });
+    nav.querySelector("#cal-show-weekends").addEventListener("change", (e) => {
+      Store.set("showWeekends", e.target.checked);
+      render(container);
+    });
     const importBtn = nav.querySelector("#cal-import-photo");
     if (importBtn) importBtn.addEventListener("click", () => Ocr.openImportModal());
 
@@ -117,17 +125,18 @@
       const weatherEl = document.createElement("div");
       weatherEl.id = "weather-widget";
       container.appendChild(weatherEl);
-      Weather.render(weatherEl, weekStart);
+      Weather.render(weatherEl, weekStart, dayCount);
     }
 
     Reminders.renderUpcomingWidget(container);
 
     const grid = document.createElement("div");
     grid.className = "calendar-grid";
+    grid.style.gridTemplateColumns = `repeat(${dayCount}, 1fr)`;
     const events = getEvents();
     const assignments = TemplateView.getAssignments();
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < dayCount; i++) {
       const date = addDays(weekStart, i);
       const dIso = iso(date);
       const templateDay = Config.getTemplateDayForDate(date);
