@@ -94,6 +94,37 @@ h1, h2, h3, h4 {
   padding: 0.75rem 0 1.25rem;
 }
 
+.main-tab.icon-button {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+  padding: 0;
+  box-shadow: none;
+}
+
+.main-tab.icon-button:hover {
+  transform: translateY(-1px) rotate(20deg);
+  box-shadow: var(--shadow-sm);
+}
+
+.main-tab.icon-button.active {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+  background: var(--bg);
+  color: inherit;
+}
+
+.main-tab.icon-button .tab-icon {
+  font-size: 1.15rem;
+}
+
 .main-tab.account-button {
   margin-left: auto;
   flex-shrink: 0;

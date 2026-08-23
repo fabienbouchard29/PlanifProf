@@ -1,9 +1,7 @@
 (function () {
   const EXCEPTION_TYPES = [
-    { key: "pedago", label: "Journée pédagogique", color: "#f08c00" },
-    { key: "ferie", label: "Congé férié", color: "#d64545" },
-    { key: "mobile", label: "Congé mobile", color: "#6d5ef0" },
-    { key: "autre", label: "Autre congé", color: "#6b7280" },
+    { key: "pedago", label: "Pédagogique", color: "#f08c00" },
+    { key: "conge", label: "Congé", color: "#d64545" },
   ];
 
   function toISODate(d) {

@@ -83,7 +83,7 @@
   window.rerenderCurrentView = rerenderCurrentView;
 
   applyModuleVisibility();
-  showView("view-horaire");
+  showView("view-calendrier");
 
   if (Onboarding.shouldShowOnboarding()) {
     Onboarding.open();

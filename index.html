@@ -16,11 +16,13 @@
       <span class="brand-name">PlanifProf</span>
     </div>
     <nav class="main-nav">
-      <button class="main-tab active" data-view="view-horaire"><span class="tab-icon">🗓️</span>Horaire</button>
-      <button class="main-tab" data-view="view-calendrier"><span class="tab-icon">📅</span>Calendrier</button>
+      <button class="main-tab active" data-view="view-calendrier"><span class="tab-icon">📅</span>Agenda</button>
       <button class="main-tab" data-view="view-eleves"><span class="tab-icon">🧑‍🎓</span>Élèves</button>
       <button class="main-tab" data-view="view-ressources"><span class="tab-icon">📚</span>Ressources</button>
     </nav>
+    <button type="button" class="main-tab icon-button" data-view="view-horaire" id="settings-button" title="Paramètres de l'horaire et des outils">
+      <span class="tab-icon">⚙️</span>
+    </button>
     <button type="button" class="main-tab account-button" data-view="view-compte" id="account-button" title="Compte">
       <span class="account-avatar" id="account-avatar">👤</span>
       <span class="sync-dot" id="sync-status" title="Non connecté — données locales seulement"></span>
@@ -28,9 +30,9 @@
   </header>
 
   <main class="views">
-    <section class="view active" id="view-horaire"></section>
+    <section class="view" id="view-horaire"></section>
 
-    <section class="view" id="view-calendrier"></section>
+    <section class="view active" id="view-calendrier"></section>
 
     <section class="view" id="view-eleves">
       <nav class="sub-nav">
