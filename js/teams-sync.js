@@ -3,21 +3,33 @@
   let msalInstance = null;
   let account = null;
 
-  function initMsal() {
+  let initPromise = null;
+
+  function createMsalInstance() {
     if (!window.MS_CONFIG || !window.MS_CONFIG.clientId) return null;
     if (typeof msal === "undefined") return null;
-    if (msalInstance) return msalInstance;
-    msalInstance = new msal.PublicClientApplication({
-      auth: {
-        clientId: window.MS_CONFIG.clientId,
-        authority: "https://login.microsoftonline.com/common",
-        redirectUri: window.MS_CONFIG.redirectUri,
-      },
-      cache: { cacheLocation: "localStorage" },
-    });
-    const accounts = msalInstance.getAllAccounts();
-    if (accounts.length) account = accounts[0];
+    if (!msalInstance) {
+      msalInstance = new msal.PublicClientApplication({
+        auth: {
+          clientId: window.MS_CONFIG.clientId,
+          authority: "https://login.microsoftonline.com/common",
+          redirectUri: window.MS_CONFIG.redirectUri,
+        },
+        cache: { cacheLocation: "localStorage" },
+      });
+    }
     return msalInstance;
+  }
+
+  // MSAL v3+ requires initialize() to be awaited before any other API call.
+  async function ensureReady() {
+    const app = createMsalInstance();
+    if (!app) return null;
+    if (!initPromise) initPromise = app.initialize();
+    await initPromise;
+    const accounts = app.getAllAccounts();
+    if (accounts.length) account = accounts[0];
+    return app;
   }
 
   function isConfigured() {
@@ -25,7 +37,7 @@
   }
 
   async function signIn() {
-    const app = initMsal();
+    const app = await ensureReady();
     if (!app) throw new Error("La connexion Microsoft n'est pas encore configurée.");
     const result = await app.loginPopup({ scopes: SCOPES });
     account = result.account;
@@ -34,7 +46,7 @@
   }
 
   async function signOutTeams() {
-    const app = initMsal();
+    const app = await ensureReady();
     if (app && account) {
       try {
         await app.logoutPopup({ account });
@@ -48,7 +60,6 @@
   }
 
   function isSignedIn() {
-    initMsal();
     return !!account;
   }
 
@@ -57,7 +68,7 @@
   }
 
   async function getToken() {
-    const app = initMsal();
+    const app = await ensureReady();
     if (!app || !account) throw new Error("Non connecté à Microsoft.");
     try {
       const result = await app.acquireTokenSilent({ scopes: SCOPES, account });
@@ -67,6 +78,8 @@
       return result.accessToken;
     }
   }
+
+  ensureReady().catch(() => {});
 
   function graphDateTimeToParts(dt) {
     const m = (dt || "").match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
