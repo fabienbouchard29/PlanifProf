@@ -129,4 +129,9 @@
       .then(() => rerenderCurrentView())
       .catch(() => {});
   }
+  if (TeamsSync.isSignedIn()) {
+    TeamsSync.syncNow()
+      .then(() => rerenderCurrentView())
+      .catch(() => {});
+  }
 })();

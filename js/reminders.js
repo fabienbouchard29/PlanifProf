@@ -95,8 +95,9 @@
       .filter((item) => item.date >= todayIso && item.date <= to);
 
     const outlookItems = (window.OutlookSync ? OutlookSync.upcoming(todayIso, 7) : []).map((e) => ({ date: e.date, time: e.time, title: e.title, kind: "teams" }));
+    const teamsItems = (window.TeamsSync ? TeamsSync.upcoming(todayIso, 7) : []).map((e) => ({ date: e.date, time: e.time, title: e.title, kind: "teams" }));
 
-    const items = [...reminderItems, ...outlookItems, ...eventItems].sort((a, b) => (a.date + (a.time || "")).localeCompare(b.date + (b.time || "")));
+    const items = [...reminderItems, ...outlookItems, ...teamsItems, ...eventItems].sort((a, b) => (a.date + (a.time || "")).localeCompare(b.date + (b.time || "")));
 
     if (!items.length) return;
 

@@ -173,13 +173,71 @@
     });
     container.appendChild(dataBox);
 
+    const teamsBox = document.createElement("div");
+    teamsBox.className = "account-sync-box";
+    const teamsSignedIn = TeamsSync.isSignedIn();
+    const teamsLast = Store.get("teamsSyncLast", "");
+    const teamsCount = TeamsSync.getEvents().length;
+    if (!TeamsSync.isConfigured()) {
+      teamsBox.innerHTML = `
+        <h3>Réunions Teams (connexion Microsoft)</h3>
+        <p class="muted">Bientôt disponible — configuration en cours.</p>
+      `;
+    } else if (teamsSignedIn) {
+      teamsBox.innerHTML = `
+        <h3>Réunions Teams (connexion Microsoft)</h3>
+        <p class="muted">Connecté en tant que <strong>${TeamsSync.getAccountLabel()}</strong>.</p>
+        <p class="muted" id="teams-status">${teamsCount ? `${teamsCount} réunion(s) synchronisée(s)${teamsLast ? " · dernière synchro : " + new Date(teamsLast).toLocaleString("fr-CA") : ""}.` : "Aucune réunion pour l'instant — cliquez Synchroniser."}</p>
+        <div class="account-actions">
+          <button type="button" class="btn btn-primary" id="teams-sync-btn">🔄 Synchroniser maintenant</button>
+          <button type="button" class="btn btn-ghost" id="teams-signout-btn">Déconnecter</button>
+        </div>
+      `;
+      teamsBox.querySelector("#teams-sync-btn").addEventListener("click", async () => {
+        const statusEl = teamsBox.querySelector("#teams-status");
+        statusEl.textContent = "Synchronisation en cours…";
+        try {
+          const n = await TeamsSync.syncNow();
+          statusEl.textContent = `✓ ${n} réunion(s) synchronisée(s).`;
+          if (window.rerenderCurrentView) window.rerenderCurrentView();
+        } catch (err) {
+          statusEl.textContent = "Erreur de synchronisation : " + err.message;
+        }
+      });
+      teamsBox.querySelector("#teams-signout-btn").addEventListener("click", async () => {
+        await TeamsSync.signOutTeams();
+        render(container);
+      });
+    } else {
+      teamsBox.innerHTML = `
+        <h3>Réunions Teams (connexion Microsoft)</h3>
+        <p class="muted">Connectez votre compte Microsoft de l'école pour voir vos réunions Teams directement dans l'Agenda — lecture seule de votre calendrier, rien d'autre.</p>
+        <button type="button" class="btn btn-primary" id="teams-signin-btn">🔗 Se connecter avec Microsoft</button>
+        <p class="muted" id="teams-status"></p>
+      `;
+      teamsBox.querySelector("#teams-signin-btn").addEventListener("click", async () => {
+        const statusEl = teamsBox.querySelector("#teams-status");
+        statusEl.textContent = "";
+        try {
+          await TeamsSync.signIn();
+          const n = await TeamsSync.syncNow();
+          statusEl.textContent = `✓ Connecté et synchronisé (${n} réunion(s)).`;
+          render(container);
+          if (window.rerenderCurrentView) window.rerenderCurrentView();
+        } catch (err) {
+          statusEl.textContent = "Connexion impossible : " + err.message;
+        }
+      });
+    }
+    container.appendChild(teamsBox);
+
     const syncBox = document.createElement("div");
     syncBox.className = "account-sync-box";
     const outlookCfg = OutlookSync.getSyncConfig();
     const outlookCount = OutlookSync.getEvents().length;
     syncBox.innerHTML = `
-      <h3>Réunions Outlook / Teams</h3>
-      <p class="muted">La synchronisation de vos propres données PlanifProf entre appareils est automatique via votre compte enseignant ci-dessus. Pour voir vos réunions Teams/Outlook dans l'Agenda, sans passer par le service TI : collez le lien de calendrier publié d'Outlook, ou importez un fichier .ics téléchargé.</p>
+      <h3>Solution de secours (lien ou fichier .ics)</h3>
+      <p class="muted">Si la connexion Microsoft ci-dessus ne fonctionne pas pour votre organisation, utilisez plutôt un lien de calendrier publié d'Outlook, ou importez un fichier .ics téléchargé.</p>
       <p class="muted" id="outlook-status">${outlookCount ? `${outlookCount} réunion(s) synchronisée(s)${outlookCfg.lastSync ? " · dernière synchro : " + new Date(outlookCfg.lastSync).toLocaleString("fr-CA") : ""}.` : "Aucune réunion synchronisée pour l'instant."}</p>
       <div class="account-actions" style="margin-bottom:0.6rem;">
         <input type="url" id="outlook-url" placeholder="Lien du calendrier Outlook publié (.ics)" value="${outlookCfg.icsUrl || ""}" style="flex:1; min-width:220px; padding:0.5rem; border:1px solid var(--border); border-radius:var(--radius-sm); font-family:inherit;" />
