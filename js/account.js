@@ -95,41 +95,6 @@
 
     renderAuthBox(container);
 
-    const themeBox = document.createElement("div");
-    themeBox.className = "account-plan-box";
-    const currentTheme = Theme.get();
-    themeBox.innerHTML = `
-      <h3>Apparence</h3>
-      <p class="muted">Choisissez le style qui vous ressemble.</p>
-      <div class="landing-theme-switch" style="justify-content:flex-start;">
-        <button type="button" class="theme-swatch ${currentTheme === "colore" ? "selected" : ""}" data-theme-choice="colore">
-          <span class="theme-swatch-dot" style="background:linear-gradient(135deg,#4f46e5,#6d5ef0)"></span>
-          Coloré
-        </button>
-        <button type="button" class="theme-swatch ${currentTheme === "serieux" ? "selected" : ""}" data-theme-choice="serieux">
-          <span class="theme-swatch-dot" style="background:#1f3a5f"></span>
-          Sérieux
-        </button>
-      </div>
-    `;
-    themeBox.querySelectorAll("[data-theme-choice]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        Theme.set(btn.dataset.themeChoice);
-        themeBox.querySelectorAll(".theme-swatch").forEach((b) => b.classList.toggle("selected", b === btn));
-      });
-    });
-    container.appendChild(themeBox);
-
-    const wizardBox = document.createElement("div");
-    wizardBox.className = "account-plan-box";
-    wizardBox.innerHTML = `
-      <h3>Assistant de configuration</h3>
-      <p class="muted">Reconfigurez votre horaire (jours ou cycle, périodes) et les outils activés en quelques questions.</p>
-      <button type="button" class="btn btn-ghost" id="relaunch-wizard">🧭 Relancer l'assistant</button>
-    `;
-    wizardBox.querySelector("#relaunch-wizard").addEventListener("click", () => Onboarding.open());
-    container.appendChild(wizardBox);
-
     const planBox = document.createElement("div");
     planBox.className = "account-plan-box";
     planBox.innerHTML = `
