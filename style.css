@@ -1406,6 +1406,91 @@ h1, h2, h3, h4 {
   background: var(--primary-2);
 }
 
+.landing-card {
+  max-width: 440px;
+  text-align: center;
+}
+
+.landing-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.landing-brand .brand-mark {
+  font-size: 2.75rem;
+  filter: drop-shadow(0 3px 6px rgba(79, 70, 229, 0.3));
+}
+
+.landing-brand h1 {
+  margin: 0;
+  font-size: 1.9rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.landing-pitch {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 360px;
+  margin: 0 auto 1.75rem;
+}
+
+.landing-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.landing-choice .btn {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.landing-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.landing-form input {
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.landing-form .btn {
+  width: 100%;
+  padding: 0.7rem;
+}
+
+.landing-skip {
+  display: block;
+  margin: 1.25rem auto 0;
+  text-decoration: underline;
+  border: none;
+  background: none;
+  color: var(--muted);
+}
+
+#landing-auth-error {
+  text-align: center;
+  min-height: 1.2em;
+}
+
 .onboarding-body h2 {
   margin: 0 0 0.5rem;
   font-size: 1.5rem;

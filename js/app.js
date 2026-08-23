@@ -97,7 +97,23 @@
   applyModuleVisibility();
   showView("view-calendrier");
 
-  if (Onboarding.shouldShowOnboarding()) {
-    Onboarding.open();
+  function handleEntryScreen(user) {
+    if (user) {
+      Landing.close();
+      return;
+    }
+    if (!Config.getConfig()) Landing.open();
   }
+
+  function watchAuthForEntryScreen() {
+    if (window.FirebaseSync) {
+      FirebaseSync.onAuthChange(handleEntryScreen);
+    } else {
+      setTimeout(() => {
+        if (window.FirebaseSync) FirebaseSync.onAuthChange(handleEntryScreen);
+        else if (Onboarding.shouldShowOnboarding()) Onboarding.open();
+      }, 1500);
+    }
+  }
+  watchAuthForEntryScreen();
 })();
