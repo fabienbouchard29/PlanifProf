@@ -175,11 +175,49 @@
 
     const syncBox = document.createElement("div");
     syncBox.className = "account-sync-box";
+    const outlookCfg = OutlookSync.getSyncConfig();
+    const outlookCount = OutlookSync.getEvents().length;
     syncBox.innerHTML = `
-      <h3>Synchronisation externe</h3>
-      <p class="muted">La synchronisation de vos propres données PlanifProf entre appareils est maintenant automatique via votre compte enseignant ci-dessus. La synchronisation bidirectionnelle avec Google Calendar et Microsoft Teams reste séparée : utilisez l'export .ics ci-dessus, importable dans la plupart des calendriers (Google, Outlook/Teams, Apple).</p>
+      <h3>Réunions Outlook / Teams</h3>
+      <p class="muted">La synchronisation de vos propres données PlanifProf entre appareils est automatique via votre compte enseignant ci-dessus. Pour voir vos réunions Teams/Outlook dans l'Agenda, sans passer par le service TI : collez le lien de calendrier publié d'Outlook, ou importez un fichier .ics téléchargé.</p>
+      <p class="muted" id="outlook-status">${outlookCount ? `${outlookCount} réunion(s) synchronisée(s)${outlookCfg.lastSync ? " · dernière synchro : " + new Date(outlookCfg.lastSync).toLocaleString("fr-CA") : ""}.` : "Aucune réunion synchronisée pour l'instant."}</p>
+      <div class="account-actions" style="margin-bottom:0.6rem;">
+        <input type="url" id="outlook-url" placeholder="Lien du calendrier Outlook publié (.ics)" value="${outlookCfg.icsUrl || ""}" style="flex:1; min-width:220px; padding:0.5rem; border:1px solid var(--border); border-radius:var(--radius-sm); font-family:inherit;" />
+        <button type="button" class="btn btn-primary" id="outlook-sync-btn">🔄 Synchroniser</button>
+      </div>
+      <div class="account-actions">
+        <label class="btn btn-ghost file-btn">📎 Importer un fichier .ics téléchargé<input type="file" id="outlook-file-input" accept=".ics,text/calendar" hidden /></label>
+      </div>
+      <p class="muted" id="outlook-help" style="margin-top:0.5rem;">Comment obtenir le lien : dans Outlook (web) → Paramètres → Calendrier → Calendriers partagés → « Publier un calendrier » → copiez le lien .ics. Si votre organisation bloque ce lien pour une synchro automatique, le fichier téléchargé fonctionne toujours.</p>
     `;
     container.appendChild(syncBox);
+
+    syncBox.querySelector("#outlook-sync-btn").addEventListener("click", async () => {
+      const url = syncBox.querySelector("#outlook-url").value.trim();
+      const statusEl = syncBox.querySelector("#outlook-status");
+      if (!url) return;
+      statusEl.textContent = "Synchronisation en cours…";
+      try {
+        const result = await OutlookSync.syncFromUrl(url);
+        statusEl.textContent = `✓ ${result.total} réunion(s) synchronisée(s) (${result.added} nouvelle(s)).`;
+        if (window.rerenderCurrentView) window.rerenderCurrentView();
+      } catch (err) {
+        statusEl.textContent = "La synchronisation automatique a échoué (souvent bloquée par Microsoft pour les liens Outlook — CORS). Utilisez plutôt l'import de fichier .ics ci-dessous.";
+      }
+    });
+
+    syncBox.querySelector("#outlook-file-input").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const statusEl = syncBox.querySelector("#outlook-status");
+      try {
+        const result = await OutlookSync.importFromFile(file);
+        statusEl.textContent = `✓ ${result.total} réunion(s) importée(s) (${result.added} nouvelle(s)).`;
+        if (window.rerenderCurrentView) window.rerenderCurrentView();
+      } catch (err) {
+        statusEl.textContent = "Le fichier n'a pas pu être lu. Vérifiez que c'est bien un fichier .ics.";
+      }
+    });
   }
 
   window.Account = { getAccount, saveAccount, render };

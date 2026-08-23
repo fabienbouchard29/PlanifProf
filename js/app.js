@@ -122,4 +122,11 @@
 
   const aboutLink = document.getElementById("about-link");
   if (aboutLink) aboutLink.addEventListener("click", () => Landing.open());
+
+  const outlookCfg = OutlookSync.getSyncConfig();
+  if (outlookCfg.icsUrl) {
+    OutlookSync.syncFromUrl(outlookCfg.icsUrl)
+      .then(() => rerenderCurrentView())
+      .catch(() => {});
+  }
 })();

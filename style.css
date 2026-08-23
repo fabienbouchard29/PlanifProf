@@ -712,6 +712,12 @@ h1, h2, h3, h4 {
   text-overflow: ellipsis;
 }
 
+.outlook-chip {
+  background: #eef6ff;
+  border-color: #b8d9f7;
+  cursor: default;
+}
+
 .reminder-add-btn {
   text-align: left;
   border: 1px dashed var(--border);

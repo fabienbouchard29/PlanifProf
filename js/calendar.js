@@ -138,6 +138,13 @@
         templateDay ? `<span class="cycle-badge">${templateDay.label}</span>` : ""
       }</div>`;
       Reminders.renderDayReminders(col, dIso);
+      OutlookSync.forDate(dIso).forEach((ev) => {
+        const chip = document.createElement("div");
+        chip.className = "reminder-chip outlook-chip";
+        chip.title = ev.location || "";
+        chip.textContent = `👥 ${ev.time ? ev.time + " " : ""}${ev.title}`;
+        col.appendChild(chip);
+      });
       if (!templateDay || !templateDay.periods.length) {
         const empty = document.createElement("div");
         empty.className = "calendar-empty";
