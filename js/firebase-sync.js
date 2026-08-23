@@ -215,8 +215,12 @@ function signIn(email, password) {
 function signInGoogle() {
   return signInWithPopup(auth, new GoogleAuthProvider());
 }
-function signOutUser() {
-  return signOut(auth);
+async function signOutUser() {
+  await signOut(auth);
+  // Clear the local cache so another person on this device doesn't see this
+  // teacher's data before signing in with their own account.
+  Store.allKeys().forEach((k) => localStorage.removeItem(k));
+  location.reload();
 }
 function getCurrentUser() {
   return auth.currentUser;
