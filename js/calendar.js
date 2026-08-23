@@ -74,8 +74,20 @@
     modal.querySelector(".modal-close").onclick = () => modal.classList.remove("open");
   }
 
+  function formatRangeLabel(start, end) {
+    const sameYear = start.getFullYear() === end.getFullYear();
+    const startStr = start.toLocaleDateString("fr-CA", sameYear ? { day: "numeric", month: "long" } : { day: "numeric", month: "long", year: "numeric" });
+    const endStr = end.toLocaleDateString("fr-CA", { day: "numeric", month: "long", year: "numeric" });
+    return `${startStr} – ${endStr}`;
+  }
+
   function render(container) {
     container.innerHTML = "";
+
+    const rangeLabel = document.createElement("h3");
+    rangeLabel.className = "calendar-range-label";
+    rangeLabel.textContent = formatRangeLabel(weekStart, addDays(weekStart, 6));
+    container.appendChild(rangeLabel);
 
     const nav = document.createElement("div");
     nav.className = "calendar-nav";

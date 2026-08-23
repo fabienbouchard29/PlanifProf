@@ -523,6 +523,13 @@ h1, h2, h3, h4 {
 }
 
 /* Calendar */
+.calendar-range-label {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  text-transform: capitalize;
+  color: var(--text);
+}
+
 .calendar-nav {
   display: flex;
   gap: 0.5rem;
