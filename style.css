@@ -417,6 +417,11 @@ h1, h2, h3, h4 {
   box-shadow: var(--shadow-sm);
 }
 
+.template-cell-break {
+  background: repeating-linear-gradient(45deg, var(--bg), var(--bg) 6px, var(--border) 6px, var(--border) 7px);
+  border-style: dashed;
+}
+
 .period-label {
   border: none;
   background: transparent;
@@ -589,6 +594,15 @@ h1, h2, h3, h4 {
   font-size: 0.7rem;
   color: var(--muted);
   font-weight: 400;
+}
+
+.calendar-break {
+  text-align: center;
+  font-size: 0.68rem;
+  color: var(--muted);
+  padding: 0.15rem;
+  border-top: 1px dashed var(--border);
+  border-bottom: 1px dashed var(--border);
 }
 
 .calendar-empty {

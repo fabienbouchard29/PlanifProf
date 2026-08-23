@@ -138,6 +138,13 @@
         col.appendChild(empty);
       } else {
         templateDay.periods.forEach((period) => {
+          if (period.type === "break") {
+            const breakEl = document.createElement("div");
+            breakEl.className = "calendar-break";
+            breakEl.textContent = `${period.label}${period.start ? " · " + period.start : ""}${period.end ? "–" + period.end : ""}`;
+            col.appendChild(breakEl);
+            return;
+          }
           const ev = events[keyFor(dIso, period.id)];
           const templateSubjId = assignments[TemplateView.keyFor(templateDay.id, period.id)];
           const subjId = (ev && ev.subjectId) || templateSubjId;

@@ -20,6 +20,7 @@
       periodsPerDay: 6,
       dayStart: "08:30",
       periodDuration: 50,
+      breakMinutes: 0,
       modules: Object.assign({}, Modules.DEFAULTS),
       weatherCity: "",
     };
@@ -56,8 +57,14 @@
       for (let i = 0; i < answers.periodsPerDay; i++) {
         const start = cursor;
         const end = addMinutes(cursor, answers.periodDuration);
-        day.periods.push({ id: Store.uuid(), label: "Période " + (i + 1), start, end });
+        day.periods.push({ id: Store.uuid(), label: "Période " + (i + 1), start, end, type: "period" });
         cursor = end;
+        if (answers.breakMinutes > 0 && i < answers.periodsPerDay - 1) {
+          const breakStart = cursor;
+          const breakEnd = addMinutes(cursor, answers.breakMinutes);
+          day.periods.push({ id: Store.uuid(), label: "Pause", start: breakStart, end: breakEnd, type: "break" });
+          cursor = breakEnd;
+        }
       }
     });
     return cfg;
@@ -141,6 +148,9 @@
       <label>Combien de minutes dure un cours ?
         <input type="number" id="ob-period-duration" min="10" max="180" step="5" value="${answers.periodDuration}" />
       </label>
+      <label>Combien de minutes de pause entre les cours ? (0 si aucune)
+        <input type="number" id="ob-break-minutes" min="0" max="60" step="5" value="${answers.breakMinutes}" />
+      </label>
     `;
   }
 
@@ -189,6 +199,7 @@
       answers.periodsPerDay = parseInt(body.querySelector("#ob-periods-per-day").value, 10) || 6;
       answers.dayStart = body.querySelector("#ob-day-start").value || "08:30";
       answers.periodDuration = parseInt(body.querySelector("#ob-period-duration").value, 10) || 50;
+      answers.breakMinutes = parseInt(body.querySelector("#ob-break-minutes").value, 10) || 0;
     }
     if (stepId === "modules") {
       body.querySelectorAll("[data-module]").forEach((el) => {

@@ -10,7 +10,12 @@
   }
 
   function addPeriod(cfg, day) {
-    day.periods.push({ id: Store.uuid(), label: "Période " + (day.periods.length + 1), start: "", end: "" });
+    const count = day.periods.filter((p) => p.type !== "break").length;
+    day.periods.push({ id: Store.uuid(), label: "Période " + (count + 1), start: "", end: "", type: "period" });
+    Config.saveConfig(cfg);
+  }
+  function addBreak(cfg, day) {
+    day.periods.push({ id: Store.uuid(), label: "Pause", start: "", end: "", type: "break" });
     Config.saveConfig(cfg);
   }
   function removePeriod(cfg, day, periodId) {
@@ -19,9 +24,31 @@
   }
   function sortPeriodsByTime(day) {
     day.periods.sort((a, b) => (a.start || "").localeCompare(b.start || ""));
-    day.periods.forEach((p, i) => {
-      if (/^Période \d+$/.test(p.label)) p.label = "Période " + (i + 1);
+    let n = 0;
+    day.periods.forEach((p) => {
+      if (p.type === "break") return;
+      n++;
+      if (/^Période \d+$/.test(p.label)) p.label = "Période " + n;
     });
+  }
+
+  function findOverlap(day, period) {
+    if (!period.start || !period.end) return null;
+    return (
+      day.periods.find((p) => {
+        if (p.id === period.id) return false;
+        if (!p.start || !p.end) return false;
+        return period.start < p.end && p.start < period.end;
+      }) || null
+    );
+  }
+
+  function confirmNoOverlap(day, period) {
+    const conflict = findOverlap(day, period);
+    if (!conflict) return true;
+    return confirm(
+      `Attention : « ${period.label} » (${period.start}-${period.end}) chevauche « ${conflict.label} » (${conflict.start}-${conflict.end}).\n\nGarder ces heures quand même ?`
+    );
   }
 
   function copyPeriodsToAll(cfg, sourceDay) {
@@ -268,10 +295,11 @@
       col.appendChild(header);
 
       day.periods.forEach((period) => {
+        const isBreak = period.type === "break";
         const cell = document.createElement("div");
-        const subjId = assignments[keyFor(day.id, period.id)];
+        const subjId = !isBreak ? assignments[keyFor(day.id, period.id)] : null;
         const subj = subjId ? Subjects.getSubject(subjId) : null;
-        cell.className = "template-cell";
+        cell.className = "template-cell" + (isBreak ? " template-cell-break" : "");
         if (subj) {
           cell.style.background = subj.color + "22";
           cell.style.borderColor = subj.color;
@@ -282,33 +310,48 @@
             <input type="time" class="period-start" value="${period.start || ""}" />
             <input type="time" class="period-end" value="${period.end || ""}" />
           </div>
-          <button type="button" class="subject-tag" style="${subj ? "background:" + subj.color + ";color:#fff" : ""}">${subj ? subj.name : "Matière…"}</button>
-          <button type="button" class="cell-remove" title="Supprimer cette période">✕</button>
+          ${isBreak ? "" : `<button type="button" class="subject-tag" style="${subj ? "background:" + subj.color + ";color:#fff" : ""}">${subj ? subj.name : "Matière…"}</button>`}
+          <button type="button" class="cell-remove" title="Supprimer">✕</button>
         `;
         cell.querySelector(".period-label").addEventListener("change", (e) => {
           period.label = e.target.value;
           Config.saveConfig(cfg);
         });
         cell.querySelector(".period-start").addEventListener("change", (e) => {
+          const oldValue = period.start;
           period.start = e.target.value;
+          if (!confirmNoOverlap(day, period)) {
+            period.start = oldValue;
+            e.target.value = oldValue;
+            return;
+          }
           sortPeriodsByTime(day);
           Config.saveConfig(cfg);
           render(container);
         });
         cell.querySelector(".period-end").addEventListener("change", (e) => {
+          const oldValue = period.end;
           period.end = e.target.value;
+          if (!confirmNoOverlap(day, period)) {
+            period.end = oldValue;
+            e.target.value = oldValue;
+            return;
+          }
           Config.saveConfig(cfg);
         });
-        cell.querySelector(".subject-tag").addEventListener("click", (e) => {
-          openSubjectPicker(e.target, (subjectId) => {
-            const a = getAssignments();
-            if (subjectId) a[keyFor(day.id, period.id)] = subjectId;
-            else delete a[keyFor(day.id, period.id)];
-            saveAssignments(a);
-            render(container);
-            document.dispatchEvent(new CustomEvent("template-changed"));
+        const subjectTag = cell.querySelector(".subject-tag");
+        if (subjectTag) {
+          subjectTag.addEventListener("click", (e) => {
+            openSubjectPicker(e.target, (subjectId) => {
+              const a = getAssignments();
+              if (subjectId) a[keyFor(day.id, period.id)] = subjectId;
+              else delete a[keyFor(day.id, period.id)];
+              saveAssignments(a);
+              render(container);
+              document.dispatchEvent(new CustomEvent("template-changed"));
+            });
           });
-        });
+        }
         cell.querySelector(".cell-remove").addEventListener("click", () => {
           removePeriod(cfg, day, period.id);
           render(container);
@@ -325,6 +368,16 @@
         render(container);
       });
       col.appendChild(addBtn);
+
+      const addBreakBtn = document.createElement("button");
+      addBreakBtn.type = "button";
+      addBreakBtn.className = "btn btn-ghost btn-small add-period-btn";
+      addBreakBtn.textContent = "+ Pause";
+      addBreakBtn.addEventListener("click", () => {
+        addBreak(cfg, day);
+        render(container);
+      });
+      col.appendChild(addBreakBtn);
 
       grid.appendChild(col);
     });
