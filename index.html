@@ -4,21 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PlanifProf</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="app-header">
-    <h1>PlanifProf</h1>
+    <div class="brand">
+      <span class="brand-mark">📘</span>
+      <h1>PlanifProf</h1>
+    </div>
     <p class="subtitle">Le planificateur numérique flexible pour enseignants</p>
     <p id="sync-status" class="sync-status muted"></p>
   </header>
 
   <nav class="main-nav">
-    <button class="main-tab active" data-view="view-horaire">Horaire</button>
-    <button class="main-tab" data-view="view-calendrier">Calendrier</button>
-    <button class="main-tab" data-view="view-eleves">Élèves</button>
-    <button class="main-tab" data-view="view-ressources">Ressources</button>
-    <button class="main-tab" data-view="view-compte">Compte</button>
+    <button class="main-tab active" data-view="view-horaire"><span class="tab-icon">🗓️</span>Horaire</button>
+    <button class="main-tab" data-view="view-calendrier"><span class="tab-icon">📅</span>Calendrier</button>
+    <button class="main-tab" data-view="view-eleves"><span class="tab-icon">🧑‍🎓</span>Élèves</button>
+    <button class="main-tab" data-view="view-ressources"><span class="tab-icon">📚</span>Ressources</button>
+    <button class="main-tab" data-view="view-compte"><span class="tab-icon">👤</span>Compte</button>
   </nav>
 
   <main class="views">
