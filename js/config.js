@@ -1,4 +1,11 @@
 (function () {
+  const EXCEPTION_TYPES = [
+    { key: "pedago", label: "Journée pédagogique", color: "#f08c00" },
+    { key: "ferie", label: "Congé férié", color: "#d64545" },
+    { key: "mobile", label: "Congé mobile", color: "#6d5ef0" },
+    { key: "autre", label: "Autre congé", color: "#6b7280" },
+  ];
+
   function toISODate(d) {
     return d.toISOString().slice(0, 10);
   }
@@ -28,12 +35,19 @@
   function ensureConfig() {
     let cfg = getConfig();
     if (!cfg) {
-      cfg = { mode: "weekday", cycleLength: 9, cycleStartDate: "", exceptions: [], cycleOverrides: {}, days: buildDefaultDays("weekday") };
+      cfg = { mode: "weekday", cycleLength: 9, cycleStartDate: "", exceptions: [], cycleOverrides: {}, exceptionTypes: {}, days: buildDefaultDays("weekday") };
       saveConfig(cfg);
     }
     if (!cfg.exceptions) cfg.exceptions = [];
     if (!cfg.cycleOverrides) cfg.cycleOverrides = {};
+    if (!cfg.exceptionTypes) cfg.exceptionTypes = {};
     return cfg;
+  }
+
+  function getExceptionType(iso) {
+    const cfg = getConfig();
+    const key = cfg && cfg.exceptionTypes && cfg.exceptionTypes[iso];
+    return EXCEPTION_TYPES.find((t) => t.key === key) || null;
   }
 
   function regenerateDays(cfg) {
@@ -85,5 +99,5 @@
     return null;
   }
 
-  window.Config = { getConfig, saveConfig, ensureConfig, regenerateDays, getTemplateDayForDate, buildDefaultDays };
+  window.Config = { getConfig, saveConfig, ensureConfig, regenerateDays, getTemplateDayForDate, buildDefaultDays, getExceptionType, EXCEPTION_TYPES };
 })();

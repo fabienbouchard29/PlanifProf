@@ -6,6 +6,7 @@
   const DOW_LABELS = ["D", "L", "M", "M", "J", "V", "S"];
 
   let state = null;
+  let openPopover = null;
 
   function toISO(d) {
     return d.toISOString().slice(0, 10);
@@ -22,7 +23,7 @@
     const list = [];
     for (let i = 0; i < count; i++) {
       const y = startYear + Math.floor((startMonth + i) / 12);
-      const m = ((startMonth + i) % 12 + 12) % 12;
+      const m = (((startMonth + i) % 12) + 12) % 12;
       list.push({ year: y, month: m });
     }
     return list;
@@ -37,6 +38,70 @@
     for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(year, month, d));
     while (cells.length % 7 !== 0) cells.push(null);
     return cells;
+  }
+
+  function closePopover() {
+    if (openPopover) {
+      openPopover.remove();
+      openPopover = null;
+    }
+  }
+
+  function openTypePicker(anchorEl, iso, cfg, onDone) {
+    closePopover();
+    const pop = document.createElement("div");
+    pop.className = "popover";
+    const currentType = cfg.exceptionTypes[iso];
+    pop.innerHTML = `<div class="popover-title">${iso}</div>`;
+
+    Config.EXCEPTION_TYPES.forEach((t) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip" + (currentType === t.key ? " chip-active" : "");
+      chip.style.background = t.color;
+      chip.textContent = t.label;
+      chip.addEventListener("click", () => {
+        cfg.exceptionTypes[iso] = t.key;
+        if (!cfg.exceptions.includes(iso)) {
+          cfg.exceptions.push(iso);
+          cfg.exceptions.sort();
+        }
+        Config.saveConfig(cfg);
+        closePopover();
+        onDone();
+      });
+      pop.appendChild(chip);
+    });
+
+    if (cfg.exceptions.includes(iso)) {
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "chip chip-none";
+      removeBtn.textContent = "Retirer — jour d'école normal";
+      removeBtn.addEventListener("click", () => {
+        const idx = cfg.exceptions.indexOf(iso);
+        if (idx !== -1) cfg.exceptions.splice(idx, 1);
+        delete cfg.exceptionTypes[iso];
+        Config.saveConfig(cfg);
+        closePopover();
+        onDone();
+      });
+      pop.appendChild(removeBtn);
+    }
+
+    document.body.appendChild(pop);
+    const rect = anchorEl.getBoundingClientRect();
+    pop.style.top = window.scrollY + rect.bottom + 4 + "px";
+    pop.style.left = window.scrollX + rect.left + "px";
+    openPopover = pop;
+    setTimeout(() => {
+      document.addEventListener("click", function handler(e) {
+        if (!pop.contains(e.target) && e.target !== anchorEl) {
+          closePopover();
+          document.removeEventListener("click", handler);
+        }
+      });
+    }, 0);
   }
 
   function renderMonth(cfg, year, month, rootContainer) {
@@ -58,21 +123,25 @@
           const iso = toISO(date);
           const isWeekend = date.getDay() === 0 || date.getDay() === 6;
           const isMarked = cfg.exceptions.includes(iso);
+          const typeInfo = Config.EXCEPTION_TYPES.find((t) => t.key === cfg.exceptionTypes[iso]);
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className = "mini-day" + (isWeekend ? " weekend" : "") + (isMarked ? " marked" : "");
           btn.textContent = String(date.getDate());
           btn.disabled = isWeekend;
-          btn.title = isWeekend ? "Fin de semaine (déjà sans école)" : isMarked ? "Cliquer pour retirer" : "Cliquer pour marquer sans école";
+          if (isMarked) btn.style.background = typeInfo ? typeInfo.color : "";
+          btn.title = isWeekend
+            ? "Fin de semaine (déjà sans école)"
+            : isMarked
+            ? `${typeInfo ? typeInfo.label : "Sans école"} — cliquer pour modifier`
+            : "Cliquer pour marquer ce jour";
           if (!isWeekend) {
-            btn.addEventListener("click", () => {
-              const idx = cfg.exceptions.indexOf(iso);
-              if (idx === -1) cfg.exceptions.push(iso);
-              else cfg.exceptions.splice(idx, 1);
-              cfg.exceptions.sort();
-              Config.saveConfig(cfg);
-              document.dispatchEvent(new CustomEvent("config-changed"));
-              render(rootContainer);
+            btn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              openTypePicker(btn, iso, cfg, () => {
+                document.dispatchEvent(new CustomEvent("config-changed"));
+                render(rootContainer);
+              });
             });
           }
           td.appendChild(btn);
@@ -112,12 +181,20 @@
     controls.querySelector("#cp-clear").addEventListener("click", () => {
       if (confirm("Effacer tous les jours marqués comme sans école ?")) {
         cfg.exceptions = [];
+        cfg.exceptionTypes = {};
         Config.saveConfig(cfg);
         document.dispatchEvent(new CustomEvent("config-changed"));
         render(container);
       }
     });
     controls.querySelector("#cp-count").textContent = `${cfg.exceptions.length} jour(s) marqué(s) au total.`;
+
+    const legend = document.createElement("div");
+    legend.className = "mini-legend";
+    legend.innerHTML = Config.EXCEPTION_TYPES.map(
+      (t) => `<span class="mini-legend-item"><span class="mini-legend-dot" style="background:${t.color}"></span>${t.label}</span>`
+    ).join("");
+    container.appendChild(legend);
 
     const grid = document.createElement("div");
     grid.className = "mini-month-grid-wrap";

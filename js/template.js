@@ -17,6 +17,13 @@
     day.periods = day.periods.filter((p) => p.id !== periodId);
     Config.saveConfig(cfg);
   }
+  function sortPeriodsByTime(day) {
+    day.periods.sort((a, b) => (a.start || "").localeCompare(b.start || ""));
+    day.periods.forEach((p, i) => {
+      if (/^Période \d+$/.test(p.label)) p.label = "Période " + (i + 1);
+    });
+  }
+
   function copyPeriodsToAll(cfg, sourceDay) {
     cfg.days.forEach((d) => {
       if (d.id !== sourceDay.id) {
@@ -238,7 +245,9 @@
         });
         cell.querySelector(".period-start").addEventListener("change", (e) => {
           period.start = e.target.value;
+          sortPeriodsByTime(day);
           Config.saveConfig(cfg);
+          render(container);
         });
         cell.querySelector(".period-end").addEventListener("change", (e) => {
           period.end = e.target.value;

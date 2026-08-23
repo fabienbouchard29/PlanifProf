@@ -126,7 +126,15 @@
       if (!templateDay || !templateDay.periods.length) {
         const empty = document.createElement("div");
         empty.className = "calendar-empty";
-        empty.textContent = "Aucun cours";
+        const exceptionType = Config.getExceptionType(dIso);
+        if (exceptionType) {
+          empty.textContent = exceptionType.label;
+          empty.style.color = exceptionType.color;
+          empty.style.fontStyle = "normal";
+          empty.style.fontWeight = "600";
+        } else {
+          empty.textContent = date.getDay() === 0 || date.getDay() === 6 ? "Fin de semaine" : "Aucun cours";
+        }
         col.appendChild(empty);
       } else {
         templateDay.periods.forEach((period) => {
