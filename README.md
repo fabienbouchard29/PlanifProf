@@ -12,7 +12,7 @@ Planificateur numérique flexible et modulaire pour enseignants — application 
 - **Compte enseignant et synchronisation cloud (Firebase)** : chaque enseignant crée son propre compte (courriel/mot de passe ou Google) ; toutes ses données sont stockées dans Firestore, isolées des autres enseignants, et synchronisées automatiquement entre tous ses appareils.
 - **Gestion des groupes et élèves**, avec module d'évaluation (notes par évaluation).
 - **Générateur d'équipes équilibrées** (niveau des élèves + mixité filles/garçons).
-- **Pigeage aléatoire** d'élèves.
+- **Pige aléatoire** d'élèves.
 - **Banque de ressources personnelles**, réutilisable d'une année à l'autre, avec recherche par étiquette.
 - **Export/impression** : impression de l'horaire, export du calendrier au format `.ics` (compatible Google Calendar, Outlook/Teams, Apple Calendar), export/import d'une sauvegarde JSON complète.
 - **Modèle freemium (démo)** : bascule Gratuit / Pro dans l'onglet Compte, illustrant le modèle d'abonnement envisagé.

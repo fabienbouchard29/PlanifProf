@@ -11,10 +11,10 @@
 </head>
 <body>
   <header class="app-topbar">
-    <div class="brand">
+    <button type="button" class="brand" id="brand-home-btn" title="Retour à l'Agenda">
       <span class="brand-mark">📘</span>
       <span class="brand-name">PlanifProf</span>
-    </div>
+    </button>
     <nav class="main-nav">
       <button class="main-tab active" data-view="view-calendrier"><span class="tab-icon">📅</span>Agenda</button>
       <button class="main-tab" data-view="view-eleves"><span class="tab-icon">🧑‍🎓</span>Élèves</button>
@@ -37,11 +37,13 @@
     <section class="view" id="view-eleves">
       <nav class="sub-nav">
         <button class="sub-tab active" data-subview="sub-groupes">Groupes &amp; élèves</button>
+        <button class="sub-tab" data-subview="sub-presences">Présences</button>
         <button class="sub-tab" data-subview="sub-evaluations">Évaluations</button>
         <button class="sub-tab" data-subview="sub-equipes">Équipes</button>
-        <button class="sub-tab" data-subview="sub-pigeage">Pigeage</button>
+        <button class="sub-tab" data-subview="sub-pigeage">Pige</button>
       </nav>
       <div class="subview active" id="sub-groupes"></div>
+      <div class="subview" id="sub-presences"></div>
       <div class="subview" id="sub-evaluations"></div>
       <div class="subview" id="sub-equipes"></div>
       <div class="subview" id="sub-pigeage"></div>
@@ -129,6 +131,7 @@
   <script src="js/ocr.js"></script>
   <script src="js/calendar.js"></script>
   <script src="js/students.js"></script>
+  <script src="js/attendance.js"></script>
   <script src="js/evaluations.js"></script>
   <script src="js/teams.js"></script>
   <script src="js/picker.js"></script>

@@ -57,6 +57,17 @@ h1, h2, h3, h4 {
   align-items: center;
   gap: 0.45rem;
   flex-shrink: 0;
+  border: none;
+  background: none;
+  padding: 0.25rem 0.35rem;
+  margin-left: -0.35rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.brand:hover {
+  background: var(--bg);
 }
 
 .brand-mark {
@@ -1183,6 +1194,81 @@ h1, h2, h3, h4 {
   background: var(--danger);
   color: white;
   font-weight: 700;
+}
+
+/* Attendance */
+.attendance-controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 0.85rem;
+}
+
+.attendance-controls select,
+.attendance-controls input {
+  padding: 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+}
+
+.attendance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.attendance-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
+}
+
+.attendance-name {
+  font-weight: 500;
+}
+
+.attendance-buttons {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.att-btn {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.att-btn.present.active {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+
+.att-btn.late.active {
+  background: #f08c00;
+  border-color: #f08c00;
+  color: white;
+}
+
+.att-btn.absent.active {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: white;
 }
 
 /* Onboarding wizard */

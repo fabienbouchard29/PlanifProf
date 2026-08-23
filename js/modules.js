@@ -4,6 +4,7 @@
     evaluations: true,
     equipes: true,
     pigeage: true,
+    presences: true,
     ressources: true,
     ocr: true,
   };

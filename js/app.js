@@ -32,10 +32,14 @@
     if (id === "sub-evaluations") Evaluations.render(container);
     if (id === "sub-equipes") Teams.render(container);
     if (id === "sub-pigeage") Picker.render(container);
+    if (id === "sub-presences") Attendance.render(container);
   }
 
   tabs.forEach((t) => t.addEventListener("click", () => showView(t.dataset.view)));
   subTabs.forEach((t) => t.addEventListener("click", () => showSubView(t.dataset.subview)));
+
+  const brandBtn = document.getElementById("brand-home-btn");
+  if (brandBtn) brandBtn.addEventListener("click", () => showView("view-calendrier"));
 
   ["config-changed", "template-changed", "subjects-changed"].forEach((evt) => {
     document.addEventListener(evt, () => {
@@ -53,6 +57,7 @@
     evaluations: '[data-subview="sub-evaluations"]',
     equipes: '[data-subview="sub-equipes"]',
     pigeage: '[data-subview="sub-pigeage"]',
+    presences: '[data-subview="sub-presences"]',
   };
 
   function applyModuleVisibility() {

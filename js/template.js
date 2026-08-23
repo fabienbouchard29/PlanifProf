@@ -129,15 +129,16 @@
 
     const MODULE_OPTIONS = [
       { key: "meteo", label: "🌦️ Météo", desc: "Un petit résumé météo dans l'Agenda." },
+      { key: "presences", label: "✅ Présences", desc: "Prendre les présences par groupe, jour par jour." },
       { key: "evaluations", label: "📝 Évaluations", desc: "Noter vos élèves pour chaque évaluation." },
       { key: "equipes", label: "🤝 Équipes équilibrées", desc: "Former des équipes automatiquement." },
-      { key: "pigeage", label: "🎲 Pigeage au hasard", desc: "Choisir un élève au hasard en classe." },
+      { key: "pigeage", label: "🎲 Pige au hasard", desc: "Choisir un élève au hasard en classe." },
       { key: "ressources", label: "📚 Banque de ressources", desc: "Garder vos ressources d'une année à l'autre." },
       { key: "ocr", label: "📷 Importer une photo", desc: "Reconnaître le texte d'un horaire papier pris en photo." },
     ];
     const modulesSection = document.createElement("details");
     modulesSection.className = "settings-panel";
-    modulesSection.innerHTML = `<summary>Outils activés</summary>`;
+    modulesSection.innerHTML = `<summary>Outils</summary>`;
     const modulesBody = document.createElement("div");
     modulesBody.className = "onboarding-modules";
     modulesBody.style.marginTop = "0.75rem";
@@ -181,9 +182,6 @@
           <input type="date" id="cfg-cycle-start" value="${cfg.cycleStartDate || ""}" />
         </label>
       </div>
-      <label style="flex:1; min-width:220px;">Jours sans école (congés, séparés par des virgules, AAAA-MM-JJ)
-        <input type="text" id="cfg-exceptions" value="${(cfg.exceptions || []).join(", ")}" placeholder="2026-10-12, 2026-12-22" />
-      </label>
     `;
     settings.appendChild(settingsBody);
     container.appendChild(settings);
@@ -211,15 +209,6 @@
         document.dispatchEvent(new CustomEvent("config-changed"));
       });
     }
-    settingsBody.querySelector("#cfg-exceptions").addEventListener("change", (e) => {
-      cfg.exceptions = e.target.value
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean);
-      Config.saveConfig(cfg);
-      document.dispatchEvent(new CustomEvent("config-changed"));
-    });
-
     const importSection = document.createElement("details");
     importSection.className = "settings-panel";
     importSection.innerHTML = `<summary>Importer le calendrier de mon école (congés, journées pédagogiques)</summary>`;

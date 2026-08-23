@@ -1,9 +1,10 @@
 (function () {
   const MODULE_OPTIONS = [
     { key: "meteo", label: "🌦️ Météo", desc: "Un petit résumé météo, pratique pour les sorties extérieures." },
+    { key: "presences", label: "✅ Présences", desc: "Prendre les présences par groupe, jour par jour." },
     { key: "evaluations", label: "📝 Évaluations", desc: "Noter vos élèves pour chaque évaluation." },
     { key: "equipes", label: "🤝 Équipes équilibrées", desc: "Former des équipes automatiquement." },
-    { key: "pigeage", label: "🎲 Pigeage au hasard", desc: "Choisir un élève au hasard en classe." },
+    { key: "pigeage", label: "🎲 Pige au hasard", desc: "Choisir un élève au hasard en classe." },
     { key: "ressources", label: "📚 Banque de ressources", desc: "Garder vos ressources d'une année à l'autre." },
     { key: "ocr", label: "📷 Importer une photo", desc: "Prendre en photo un horaire papier pour en récupérer le texte." },
   ];
