@@ -308,6 +308,16 @@ h1, h2, h3, h4 {
   box-shadow: var(--shadow-sm);
 }
 
+.wizard-shortcut {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--primary-soft);
+  border-color: var(--primary);
+}
+
 .settings-panel summary {
   cursor: pointer;
   font-weight: 600;

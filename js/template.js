@@ -88,6 +88,18 @@
     const cfg = Config.ensureConfig();
     const assignments = getAssignments();
 
+    const wizardBar = document.createElement("div");
+    wizardBar.className = "settings-panel wizard-shortcut";
+    wizardBar.innerHTML = `
+      <div>
+        <strong>Besoin d'aide pour tout configurer ?</strong>
+        <p class="muted" style="margin:0.2rem 0 0;">L'assistant vous guide pas à pas : horaire, périodes, congés, outils à activer.</p>
+      </div>
+      <button type="button" class="btn btn-primary" id="wizard-shortcut-btn">🧭 Lancer l'assistant</button>
+    `;
+    wizardBar.querySelector("#wizard-shortcut-btn").addEventListener("click", () => Onboarding.open());
+    container.appendChild(wizardBar);
+
     const MODULE_OPTIONS = [
       { key: "meteo", label: "🌦️ Météo", desc: "Un petit résumé météo dans l'Agenda." },
       { key: "evaluations", label: "📝 Évaluations", desc: "Noter vos élèves pour chaque évaluation." },
