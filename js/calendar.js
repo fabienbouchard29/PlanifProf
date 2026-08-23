@@ -117,7 +117,7 @@
       const weatherEl = document.createElement("div");
       weatherEl.id = "weather-widget";
       container.appendChild(weatherEl);
-      Weather.render(weatherEl);
+      Weather.render(weatherEl, weekStart);
     }
 
     Reminders.renderUpcomingWidget(container);

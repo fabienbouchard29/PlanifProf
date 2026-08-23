@@ -665,6 +665,54 @@ h1, h2, h3, h4 {
   color: var(--primary);
 }
 
+.weather-week {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.weather-city-label {
+  font-weight: 600;
+  margin-right: auto;
+}
+
+.weather-strip {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.weather-day-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.4rem 0.2rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  text-align: center;
+}
+
+.wd-label {
+  font-size: 0.68rem;
+  color: var(--muted);
+  text-transform: capitalize;
+}
+
+.wd-icon {
+  font-size: 1.15rem;
+}
+
+.wd-temp {
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.wd-na {
+  color: var(--border);
+  font-size: 0.9rem;
+}
+
 .upcoming-widget {
   background: var(--panel-bg);
   border: 1px solid var(--border);

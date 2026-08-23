@@ -36,12 +36,18 @@
     return data.results || [];
   }
 
-  async function fetchWeather(lat, lon) {
-    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`);
+  async function fetchDailyForecast(lat, lon) {
+    const res = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&past_days=7&forecast_days=7`
+    );
     return res.json();
   }
 
-  function render(container) {
+  function iso(d) {
+    return d.toISOString().slice(0, 10);
+  }
+
+  function render(container, weekStart) {
     const city = getCity();
     container.innerHTML = "";
     const box = document.createElement("div");
@@ -64,34 +70,54 @@
         }
         const r = results[0];
         saveCity({ name: r.name, lat: r.latitude, lon: r.longitude });
-        render(container);
+        render(container, weekStart);
       });
       return;
     }
 
-    box.innerHTML = `<span>Chargement de la météo pour ${city.name}…</span>`;
+    box.classList.add("weather-week");
+    box.innerHTML = `<span class="weather-city-label">📍 ${city.name}</span><button type="button" class="btn btn-ghost btn-small" id="weather-change">Changer</button>`;
+    const strip = document.createElement("div");
+    strip.className = "weather-strip";
+    strip.innerHTML = '<span class="muted">Chargement de la météo…</span>';
+    box.appendChild(strip);
     container.appendChild(box);
-    fetchWeather(city.lat, city.lon)
+
+    box.querySelector("#weather-change").addEventListener("click", () => {
+      saveCity(null);
+      render(container, weekStart);
+    });
+
+    const start = weekStart || new Date();
+
+    fetchDailyForecast(city.lat, city.lon)
       .then((data) => {
-        const cur = data.current;
-        const desc = WEATHER_CODES[cur.weather_code] || "—";
-        box.innerHTML = `
-          <span class="weather-desc">${desc}</span>
-          <span class="weather-temp">${Math.round(cur.temperature_2m)}°C</span>
-          <span class="weather-city">${city.name}</span>
-          <button type="button" class="btn btn-ghost btn-small" id="weather-change">Changer</button>
-        `;
-        box.querySelector("#weather-change").addEventListener("click", () => {
-          saveCity(null);
-          render(container);
-        });
+        strip.innerHTML = "";
+        const days = (data.daily && data.daily.time) || [];
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(start);
+          d.setDate(d.getDate() + i);
+          const dIso = iso(d);
+          const idx = days.indexOf(dIso);
+          const chip = document.createElement("div");
+          chip.className = "weather-day-chip";
+          const label = d.toLocaleDateString("fr-CA", { weekday: "short" });
+          if (idx === -1) {
+            chip.innerHTML = `<span class="wd-label">${label}</span><span class="wd-na">—</span>`;
+          } else {
+            const code = data.daily.weather_code[idx];
+            const max = Math.round(data.daily.temperature_2m_max[idx]);
+            const min = Math.round(data.daily.temperature_2m_min[idx]);
+            const desc = WEATHER_CODES[code] || "🌡️ —";
+            const icon = desc.split(" ")[0];
+            chip.title = desc.replace(/^\S+\s*/, "");
+            chip.innerHTML = `<span class="wd-label">${label}</span><span class="wd-icon">${icon}</span><span class="wd-temp">${max}°/${min}°</span>`;
+          }
+          strip.appendChild(chip);
+        }
       })
       .catch(() => {
-        box.innerHTML = `<span>Météo indisponible pour le moment.</span> <button type="button" class="btn btn-ghost btn-small" id="weather-change">Changer de ville</button>`;
-        box.querySelector("#weather-change").addEventListener("click", () => {
-          saveCity(null);
-          render(container);
-        });
+        strip.innerHTML = '<span class="muted">Météo indisponible pour le moment.</span>';
       });
   }
 
