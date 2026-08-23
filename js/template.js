@@ -215,13 +215,13 @@
           cell.style.borderColor = subj.color;
         }
         cell.innerHTML = `
+          <button type="button" class="cell-remove" title="Supprimer">✕</button>
           <input type="text" class="period-label" value="${period.label}" />
           <div class="period-times">
             <input type="time" class="period-start" value="${period.start || ""}" />
             <input type="time" class="period-end" value="${period.end || ""}" />
           </div>
           ${isBreak ? "" : `<button type="button" class="subject-tag" style="${subj ? "background:" + subj.color + ";color:#fff" : ""}">${subj ? subj.name : "Matière…"}</button>`}
-          <button type="button" class="cell-remove" title="Supprimer">✕</button>
         `;
         cell.querySelector(".period-label").addEventListener("change", (e) => {
           period.label = e.target.value;
