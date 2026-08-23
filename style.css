@@ -1025,6 +1025,71 @@ h1, h2, h3, h4 {
   font-family: inherit;
 }
 
+/* Visual multi-month day picker */
+.mini-month-grid-wrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+}
+
+.mini-month {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem;
+}
+
+.mini-month-title {
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-bottom: 0.35rem;
+}
+
+.mini-month-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mini-month-table th {
+  font-size: 0.65rem;
+  color: var(--muted);
+  font-weight: 600;
+  padding: 0.1rem 0;
+}
+
+.mini-month-table td {
+  padding: 0.05rem;
+  text-align: center;
+}
+
+.mini-day {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.mini-day:hover:not(:disabled) {
+  border-color: var(--primary);
+}
+
+.mini-day.weekend {
+  color: var(--border);
+  cursor: default;
+}
+
+.mini-day.marked {
+  background: var(--danger);
+  color: white;
+  font-weight: 700;
+}
+
 /* Onboarding wizard */
 .onboarding-overlay {
   display: none;

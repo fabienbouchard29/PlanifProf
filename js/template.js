@@ -175,6 +175,16 @@
 
     importBody.querySelector("#pdf-import-open-btn").addEventListener("click", () => PdfImport.openImportModal());
 
+    const pickerSection = document.createElement("details");
+    pickerSection.className = "settings-panel";
+    pickerSection.innerHTML = `<summary>Marquer les jours sans école visuellement (cliquer sur un calendrier)</summary>`;
+    const pickerBody = document.createElement("div");
+    pickerSection.appendChild(pickerBody);
+    container.appendChild(pickerSection);
+    pickerSection.addEventListener("toggle", () => {
+      if (pickerSection.open) CalendarPicker.render(pickerBody);
+    });
+
     const subjectsSection = document.createElement("details");
     subjectsSection.className = "settings-panel";
     subjectsSection.innerHTML = `<summary>Matières et groupes (couleurs)</summary>`;
