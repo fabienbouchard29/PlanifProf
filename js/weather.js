@@ -101,17 +101,17 @@
           const idx = days.indexOf(dIso);
           const chip = document.createElement("div");
           chip.className = "weather-day-chip";
-          const label = d.toLocaleDateString("fr-CA", { weekday: "short" });
           if (idx === -1) {
-            chip.innerHTML = `<span class="wd-label">${label}</span><span class="wd-na">—</span>`;
+            chip.innerHTML = `<span class="wd-na">—</span>`;
+            chip.title = d.toLocaleDateString("fr-CA", { weekday: "long" });
           } else {
             const code = data.daily.weather_code[idx];
             const max = Math.round(data.daily.temperature_2m_max[idx]);
             const min = Math.round(data.daily.temperature_2m_min[idx]);
             const desc = WEATHER_CODES[code] || "🌡️ —";
             const icon = desc.split(" ")[0];
-            chip.title = desc.replace(/^\S+\s*/, "");
-            chip.innerHTML = `<span class="wd-label">${label}</span><span class="wd-icon">${icon}</span><span class="wd-temp">${max}°/${min}°</span>`;
+            chip.title = `${d.toLocaleDateString("fr-CA", { weekday: "long" })} — ${desc.replace(/^\S+\s*/, "")}`;
+            chip.innerHTML = `<span class="wd-icon">${icon}</span><span class="wd-temp">${max}°/${min}°</span>`;
           }
           strip.appendChild(chip);
         }

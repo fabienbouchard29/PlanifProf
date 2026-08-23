@@ -646,8 +646,8 @@ h1, h2, h3, h4 {
   background: var(--panel-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 0.65rem 1rem;
-  margin-bottom: 0.85rem;
+  padding: 0.4rem 0.65rem;
+  margin-bottom: 0.6rem;
   font-size: 0.9rem;
   flex-wrap: wrap;
   box-shadow: var(--shadow-sm);
@@ -678,34 +678,29 @@ h1, h2, h3, h4 {
 .weather-strip {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.4rem;
-  margin-top: 0.5rem;
+  gap: 0.25rem;
+  margin-top: 0.35rem;
 }
 
 .weather-day-chip {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.15rem;
-  padding: 0.4rem 0.2rem;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.2rem;
   border-radius: var(--radius-sm);
   background: var(--bg);
   text-align: center;
 }
 
-.wd-label {
-  font-size: 0.68rem;
-  color: var(--muted);
-  text-transform: capitalize;
-}
-
 .wd-icon {
-  font-size: 1.15rem;
+  font-size: 0.95rem;
 }
 
 .wd-temp {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .wd-na {
