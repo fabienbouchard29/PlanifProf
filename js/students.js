@@ -103,7 +103,7 @@
 
       const table = document.createElement("table");
       table.className = "student-table";
-      table.innerHTML = "<thead><tr><th>Nom</th><th>Genre</th><th>Niveau (1-5)</th><th></th></tr></thead>";
+      table.innerHTML = "<thead><tr><th>Nom</th><th>Genre</th><th></th></tr></thead>";
       const tbody = document.createElement("tbody");
       studentsInGroup(group.id).forEach((s) => {
         const tr = document.createElement("tr");
@@ -116,12 +116,10 @@
               <option value="autre" ${s.gender === "autre" ? "selected" : ""}>Autre</option>
             </select>
           </td>
-          <td><input type="number" min="1" max="5" class="s-level" value="${s.level}" /></td>
           <td><button type="button" class="btn btn-ghost btn-small s-remove">✕</button></td>
         `;
         tr.querySelector(".s-name").addEventListener("change", (e) => updateStudent(s.id, { name: e.target.value }));
         tr.querySelector(".s-gender").addEventListener("change", (e) => updateStudent(s.id, { gender: e.target.value }));
-        tr.querySelector(".s-level").addEventListener("change", (e) => updateStudent(s.id, { level: Number(e.target.value) }));
         tr.querySelector(".s-remove").addEventListener("click", () => {
           removeStudent(s.id);
           render(container);
@@ -136,12 +134,11 @@
       addStudentForm.innerHTML = `
         <input type="text" name="name" placeholder="Nom de l'élève" required />
         <select name="gender"><option value="F">F</option><option value="M">M</option><option value="autre">Autre</option></select>
-        <input type="number" name="level" min="1" max="5" value="3" />
         <button class="btn btn-primary" type="submit">Ajouter l'élève</button>
       `;
       addStudentForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        addStudent(group.id, addStudentForm.name.value.trim(), addStudentForm.gender.value, addStudentForm.level.value);
+        addStudent(group.id, addStudentForm.name.value.trim(), addStudentForm.gender.value, 3);
         addStudentForm.reset();
         render(container);
       });
