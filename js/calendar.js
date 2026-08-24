@@ -219,13 +219,30 @@
             cell.classList.add("highlight-" + ev.highlight);
           }
           cell.innerHTML = `
-            <button type="button" class="calendar-cell-body">
-              <div class="calendar-cell-period">${period.label}${period.start ? " · " + period.start : ""}</div>
-              <div class="calendar-cell-title">${ev && ev.title ? ev.title : subj ? subj.name : ""}</div>
-            </button>
+            <div class="calendar-cell-period">${period.label}${period.start ? " · " + period.start : ""}</div>
+            <textarea class="calendar-cell-note" rows="2" placeholder="${subj ? subj.name : "Écrire…"}"></textarea>
+            <button type="button" class="calendar-cell-more" title="Options (matière, surlignage, détails)">⋯</button>
             <button type="button" class="calendar-cell-taught" title="Marquer comme enseignée">${ev && ev.taught ? "✓" : ""}</button>
           `;
-          cell.querySelector(".calendar-cell-body").addEventListener("click", () => openEventModal(dIso, period));
+          const noteArea = cell.querySelector(".calendar-cell-note");
+          noteArea.value = (ev && ev.title) || "";
+          noteArea.addEventListener("click", (e) => e.stopPropagation());
+          noteArea.addEventListener("input", () => {
+            const evs = getEvents();
+            const key = keyFor(dIso, period.id);
+            const existing = evs[key] || { title: "", subjectId: null, notes: "", highlight: null, taught: false };
+            existing.title = noteArea.value;
+            if (!existing.title.trim() && !existing.notes && !existing.highlight && !existing.taught && !existing.subjectId) {
+              delete evs[key];
+            } else {
+              evs[key] = existing;
+            }
+            saveEvents(evs);
+          });
+          cell.querySelector(".calendar-cell-more").addEventListener("click", (e) => {
+            e.stopPropagation();
+            openEventModal(dIso, period);
+          });
           cell.querySelector(".calendar-cell-taught").addEventListener("click", (e) => {
             e.stopPropagation();
             toggleTaught(dIso, period);
