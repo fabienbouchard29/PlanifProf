@@ -110,6 +110,8 @@
 
     const showWeekends = Store.get("showWeekends", true);
     const dayCount = showWeekends ? 7 : 5;
+    const cfg = Config.getConfig();
+    const isCycleMode = !!(cfg && cfg.mode === "cycle");
 
     const nav = document.createElement("div");
     nav.className = "calendar-nav";
@@ -217,7 +219,7 @@
       col.className = "calendar-day";
       const isToday = iso(new Date()) === dIso;
       col.innerHTML = `<div class="calendar-day-header ${isToday ? "today" : ""}">${formatDayHeader(date)}${
-        templateDay ? `<span class="cycle-badge">${templateDay.label}</span>` : ""
+        templateDay && isCycleMode ? `<span class="cycle-badge">${templateDay.label}</span>` : ""
       }${weatherEnabled ? `<span class="calendar-day-weather" id="wd-${dIso}"></span>` : ""}</div>`;
       if (weatherEnabled) weatherBadges[dIso] = col.querySelector(`#wd-${dIso}`);
       Reminders.renderDayReminders(col, dIso);
