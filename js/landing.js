@@ -116,12 +116,10 @@
 
   function renderContent() {
     const card = document.getElementById("landing-card");
-    const hasData = !!(window.Config && Config.getConfig());
     const isLoggedIn = !!(window.FirebaseSync && FirebaseSync.getCurrentUser());
-    const returning = hasData || isLoggedIn;
 
     card.innerHTML = `
-      ${returning ? '<button type="button" class="modal-close landing-close" id="landing-close-btn">✕</button>' : ""}
+      ${isLoggedIn ? '<button type="button" class="modal-close landing-close" id="landing-close-btn">✕</button>' : ""}
       <div class="landing-brand">
         <span class="brand-mark">📘</span>
         <h1>PlanifProf</h1>
@@ -130,10 +128,9 @@
       <div id="landing-theme-area"></div>
       <div class="landing-features"></div>
       <div id="landing-auth-area"></div>
-      ${returning ? "" : '<button type="button" class="btn btn-ghost landing-skip" id="landing-skip">Continuer sans compte</button>'}
     `;
 
-    if (returning) {
+    if (isLoggedIn) {
       card.querySelector("#landing-close-btn").addEventListener("click", close);
     }
 
@@ -150,15 +147,11 @@
     ).join("");
 
     const authArea = card.querySelector("#landing-auth-area");
-    if (returning) {
+    if (isLoggedIn) {
       authArea.innerHTML = `<button type="button" class="btn btn-primary" id="landing-continue-btn">Ouvrir mon Agenda →</button>`;
       authArea.querySelector("#landing-continue-btn").addEventListener("click", close);
     } else {
       renderChoice(authArea);
-      card.querySelector("#landing-skip").addEventListener("click", () => {
-        close();
-        Onboarding.open();
-      });
     }
   }
 
