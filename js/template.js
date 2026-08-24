@@ -379,30 +379,12 @@
     themeSection.innerHTML = `<summary>Apparence</summary>`;
     const themeBody = document.createElement("div");
     themeBody.style.marginTop = "0.75rem";
-    const currentTheme = Theme.get();
-    themeBody.innerHTML = `
-      <p class="muted" style="margin-top:0;">Choisissez le style qui vous ressemble.</p>
-      <div class="landing-theme-switch" style="justify-content:flex-start;">
-        <button type="button" class="theme-swatch ${currentTheme === "colore" ? "selected" : ""}" data-theme-choice="colore">
-          <span class="theme-swatch-dot" style="background:linear-gradient(135deg,#4f46e5,#6d5ef0)"></span>
-          Coloré
-        </button>
-        <button type="button" class="theme-swatch ${currentTheme === "serieux" ? "selected" : ""}" data-theme-choice="serieux">
-          <span class="theme-swatch-dot" style="background:#1f3a5f"></span>
-          Sérieux
-        </button>
-        <button type="button" class="theme-swatch ${currentTheme === "sombre" ? "selected" : ""}" data-theme-choice="sombre">
-          <span class="theme-swatch-dot" style="background:#20222f"></span>
-          Sombre
-        </button>
-      </div>
-    `;
-    themeBody.querySelectorAll("[data-theme-choice]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        Theme.set(btn.dataset.themeChoice);
-        themeBody.querySelectorAll(".theme-swatch").forEach((b) => b.classList.toggle("selected", b === btn));
-      });
-    });
+    themeBody.innerHTML = `<p class="muted" style="margin-top:0;">Choisissez le style qui vous ressemble.</p>`;
+    const themeSwitch = document.createElement("div");
+    themeSwitch.className = "landing-theme-switch";
+    themeSwitch.style.justifyContent = "flex-start";
+    Theme.renderSwitcher(themeSwitch);
+    themeBody.appendChild(themeSwitch);
     themeSection.appendChild(themeBody);
     container.appendChild(themeSection);
   }

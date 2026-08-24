@@ -34,8 +34,9 @@
     controls.innerHTML = `
       <select id="att-group">${groups.map((g) => `<option value="${g.id}" ${g.id === selectedGroupId ? "selected" : ""}>${g.name}</option>`).join("")}</select>
       <input type="date" id="att-date" value="${selectedDate}" />
-      <button type="button" class="btn btn-ghost" id="att-all-present">✅ Tout marquer présent</button>
-      <button type="button" class="btn btn-ghost" id="att-clear-day">Effacer ce jour</button>
+      <button type="button" class="btn btn-ghost no-print" id="att-all-present">✅ Tout marquer présent</button>
+      <button type="button" class="btn btn-ghost no-print" id="att-clear-day">Effacer ce jour</button>
+      <button type="button" class="btn btn-ghost no-print" id="att-print">🖨️ Imprimer</button>
     `;
     container.appendChild(controls);
 
@@ -48,6 +49,7 @@
       selectedDate = e.target.value;
       render(container);
     });
+    controls.querySelector("#att-print").addEventListener("click", () => Exports.printSchedule());
 
     const students = Students.studentsInGroup(selectedGroupId);
     const attendance = getAttendance();

@@ -32,29 +32,9 @@
   }
 
   function renderThemeSwitcher(container) {
-    const current = Theme.get();
     const box = document.createElement("div");
     box.className = "landing-theme-switch";
-    box.innerHTML = `
-      <button type="button" class="theme-swatch ${current === "colore" ? "selected" : ""}" data-theme-choice="colore">
-        <span class="theme-swatch-dot" style="background:linear-gradient(135deg,#4f46e5,#6d5ef0)"></span>
-        Coloré
-      </button>
-      <button type="button" class="theme-swatch ${current === "serieux" ? "selected" : ""}" data-theme-choice="serieux">
-        <span class="theme-swatch-dot" style="background:#1f3a5f"></span>
-        Sérieux
-      </button>
-      <button type="button" class="theme-swatch ${current === "sombre" ? "selected" : ""}" data-theme-choice="sombre">
-        <span class="theme-swatch-dot" style="background:#20222f"></span>
-        Sombre
-      </button>
-    `;
-    box.querySelectorAll("[data-theme-choice]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        Theme.set(btn.dataset.themeChoice);
-        box.querySelectorAll(".theme-swatch").forEach((b) => b.classList.toggle("selected", b === btn));
-      });
-    });
+    Theme.renderSwitcher(box);
     container.appendChild(box);
   }
 

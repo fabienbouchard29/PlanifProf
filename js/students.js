@@ -47,7 +47,7 @@
     wrap.className = "group-layout";
 
     const sidebar = document.createElement("div");
-    sidebar.className = "group-sidebar";
+    sidebar.className = "group-sidebar no-print";
     sidebar.innerHTML = `<h3>Groupes</h3>`;
     const list = document.createElement("div");
     list.className = "group-list";
@@ -90,9 +90,15 @@
       const header = document.createElement("div");
       header.className = "group-main-header";
       header.innerHTML = `<h3>${group.name}</h3>`;
+      const printBtn = document.createElement("button");
+      printBtn.type = "button";
+      printBtn.className = "btn btn-ghost no-print";
+      printBtn.textContent = "🖨️ Imprimer";
+      printBtn.addEventListener("click", () => Exports.printSchedule());
+      header.appendChild(printBtn);
       const removeBtn = document.createElement("button");
       removeBtn.type = "button";
-      removeBtn.className = "btn btn-ghost";
+      removeBtn.className = "btn btn-ghost no-print";
       removeBtn.textContent = "Supprimer le groupe";
       removeBtn.addEventListener("click", () => {
         if (confirm(`Supprimer le groupe "${group.name}" et tous ses élèves ?`)) {

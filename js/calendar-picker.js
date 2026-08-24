@@ -158,7 +158,7 @@
     const typeInfo = Config.EXCEPTION_TYPES.find((t) => t.key === cfg.exceptionTypes[iso]);
     btn.className = "mini-day" + (isMarked ? " marked" : "");
     btn.style.background = isMarked ? (typeInfo ? typeInfo.color : "") : "";
-    btn.title = isMarked ? `${typeInfo ? typeInfo.label : "Sans école"} — cliquer pour modifier` : "Cliquer pour marquer ce jour";
+    btn.title = isMarked ? `${typeInfo ? `${typeInfo.icon} ${typeInfo.label}` : "Sans école"} — cliquer pour modifier` : "Cliquer pour marquer ce jour";
   }
 
   function updateCount(cfg) {
@@ -195,7 +195,7 @@
       chip.type = "button";
       chip.className = "chip" + (currentType === t.key ? " chip-active" : "");
       chip.style.background = t.color;
-      chip.textContent = t.label;
+      chip.textContent = `${t.icon} ${t.label}`;
       chip.addEventListener("click", () => {
         cfg.exceptionTypes[iso] = t.key;
         if (!cfg.exceptions.includes(iso)) {
@@ -375,7 +375,7 @@
       chip.type = "button";
       chip.className = "chip" + (quickMode === t.key ? " chip-active" : "");
       chip.style.background = t.color;
-      chip.textContent = "🖊️ " + t.label;
+      chip.textContent = `${t.icon} ${t.label}`;
       chip.addEventListener("click", () => {
         quickMode = t.key;
         render(container);
@@ -397,7 +397,7 @@
     const legend = document.createElement("div");
     legend.className = "mini-legend";
     legend.innerHTML = Config.EXCEPTION_TYPES.map(
-      (t) => `<span class="mini-legend-item"><span class="mini-legend-dot" style="background:${t.color}"></span>${t.label}</span>`
+      (t) => `<span class="mini-legend-item"><span class="mini-legend-dot" style="background:${t.color}"></span>${t.icon} ${t.label}</span>`
     ).join("");
     mainCol.appendChild(legend);
 

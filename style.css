@@ -111,6 +111,81 @@
   color: #d7e6fb;
 }
 
+:root[data-theme="foret"] {
+  --bg: #eef2e6;
+  --bg-alt: #e2e8d5;
+  --panel-bg: #fbfaf5;
+  --text: #2b3a2a;
+  --muted: #6b7a63;
+  --border: #d3ddc4;
+  --primary: #3f6b3f;
+  --primary-2: #6b8f4e;
+  --primary-hover: #315530;
+  --primary-soft: #e3ebd8;
+  --danger: #b5533c;
+  --success: #4a7c4a;
+}
+
+:root[data-theme="plage"] {
+  --bg: #f7f2e7;
+  --bg-alt: #efe6d2;
+  --panel-bg: #fffdf8;
+  --text: #2b4a52;
+  --muted: #7a8f92;
+  --border: #e3d8bf;
+  --primary: #1f9aa0;
+  --primary-2: #4fc4bd;
+  --primary-hover: #17797e;
+  --primary-soft: #ddf2f0;
+  --danger: #d9704f;
+  --success: #2f9d6f;
+}
+
+:root[data-theme="automne"] {
+  --bg: #f7ede2;
+  --bg-alt: #f0e0cd;
+  --panel-bg: #fffaf3;
+  --text: #4a2f1f;
+  --muted: #8a6a52;
+  --border: #e8d2b5;
+  --primary: #c1682f;
+  --primary-2: #d98c3d;
+  --primary-hover: #9c5124;
+  --primary-soft: #f5e2cc;
+  --danger: #a3392c;
+  --success: #6b7c3a;
+}
+
+:root[data-theme="hiver"] {
+  --bg: #eef3f8;
+  --bg-alt: #e2eaf2;
+  --panel-bg: #ffffff;
+  --text: #1e2b3a;
+  --muted: #6b7d8f;
+  --border: #d8e3ee;
+  --primary: #3a72a8;
+  --primary-2: #5f9bd1;
+  --primary-hover: #2c5c8a;
+  --primary-soft: #e1edf7;
+  --danger: #b5495a;
+  --success: #2f8f7a;
+}
+
+:root[data-theme="printemps"] {
+  --bg: #fdf1f4;
+  --bg-alt: #fbe6ec;
+  --panel-bg: #fffbfc;
+  --text: #3a2b33;
+  --muted: #8a7683;
+  --border: #f3d9e2;
+  --primary: #d6689a;
+  --primary-2: #8fbf6b;
+  --primary-hover: #b84f80;
+  --primary-soft: #fbe4ee;
+  --danger: #c65a4f;
+  --success: #5da85e;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -2299,8 +2374,16 @@ h1, h2, h3, h4 {
   .calendar-nav,
   .weather-box,
   .settings-panel,
-  .modal {
+  .modal,
+  .no-print,
+  .save-toast,
+  .tour-card,
+  .tour-highlight {
     display: none !important;
+  }
+
+  .group-layout {
+    grid-template-columns: 1fr;
   }
 }
 

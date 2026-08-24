@@ -47,7 +47,7 @@
     const evals = getEvaluations().filter((e) => e.groupId === selectedGroupId);
 
     const addForm = document.createElement("form");
-    addForm.className = "eval-add-form";
+    addForm.className = "eval-add-form no-print";
     addForm.innerHTML = `
       <input type="text" name="title" placeholder="Titre de l'évaluation" required />
       <input type="date" name="date" />
@@ -67,7 +67,7 @@
     container.appendChild(addForm);
 
     const tabs = document.createElement("div");
-    tabs.className = "eval-tabs";
+    tabs.className = "eval-tabs no-print";
     evals.forEach((ev) => {
       const btn = document.createElement("button");
       btn.type = "button";
@@ -89,6 +89,17 @@
     const results = getResults();
     const evalResults = results[currentEval.id] || {};
 
+    const evalHeader = document.createElement("div");
+    evalHeader.className = "group-main-header";
+    evalHeader.innerHTML = `<h3>${currentEval.title}</h3>`;
+    const printBtn = document.createElement("button");
+    printBtn.type = "button";
+    printBtn.className = "btn btn-ghost no-print";
+    printBtn.textContent = "🖨️ Imprimer";
+    printBtn.addEventListener("click", () => Exports.printSchedule());
+    evalHeader.appendChild(printBtn);
+    container.appendChild(evalHeader);
+
     const table = document.createElement("table");
     table.className = "student-table";
     table.innerHTML = `<thead><tr><th>Élève</th><th>Note (/${currentEval.max})</th></tr></thead>`;
@@ -109,7 +120,7 @@
 
     const deleteBtn = document.createElement("button");
     deleteBtn.type = "button";
-    deleteBtn.className = "btn btn-ghost";
+    deleteBtn.className = "btn btn-ghost no-print";
     deleteBtn.textContent = "Supprimer cette évaluation";
     deleteBtn.addEventListener("click", () => {
       if (confirm("Supprimer cette évaluation ?")) {

@@ -1,7 +1,7 @@
 (function () {
   const EXCEPTION_TYPES = [
-    { key: "pedago", label: "Pédagogique", color: "#f08c00" },
-    { key: "conge", label: "Congé", color: "#d64545" },
+    { key: "pedago", label: "Pédagogique", color: "#f08c00", icon: "📚" },
+    { key: "conge", label: "Congé", color: "#d64545", icon: "🎉" },
   ];
 
   function toISODate(d) {

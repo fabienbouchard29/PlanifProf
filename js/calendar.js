@@ -302,7 +302,7 @@
       if (exceptionType) {
         const banner = document.createElement("div");
         banner.className = "calendar-exception-banner";
-        banner.textContent = exceptionType.label;
+        banner.textContent = `${exceptionType.icon} ${exceptionType.label}`;
         banner.style.color = exceptionType.color;
         col.style.background = exceptionType.color + "15";
         col.style.borderColor = exceptionType.color;
