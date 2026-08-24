@@ -127,6 +127,14 @@
   const tourLink = document.getElementById("tour-link");
   if (tourLink) tourLink.addEventListener("click", () => Tour.start());
 
+  const themeQuickButton = document.getElementById("theme-quick-button");
+  if (themeQuickButton) {
+    themeQuickButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      Theme.openQuickSwitcher(themeQuickButton);
+    });
+  }
+
   const outlookCfg = OutlookSync.getSyncConfig();
   if (outlookCfg.icsUrl) {
     OutlookSync.syncFromUrl(outlookCfg.icsUrl)

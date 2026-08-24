@@ -20,7 +20,8 @@
 
   // Renders a row of theme swatch buttons into `container` and wires them up. Call again
   // (or let a parent re-render) after a change if the surrounding view needs to reflect it.
-  function renderSwitcher(container) {
+  // `onSelect(key)` fires right after the theme is applied, e.g. to close a popover.
+  function renderSwitcher(container, onSelect) {
     const current = get();
     container.innerHTML = OPTIONS.map(
       (o) => `
@@ -34,9 +35,46 @@
       btn.addEventListener("click", () => {
         set(btn.dataset.themeChoice);
         container.querySelectorAll(".theme-swatch").forEach((b) => b.classList.toggle("selected", b === btn));
+        if (onSelect) onSelect(btn.dataset.themeChoice);
       });
     });
   }
 
-  window.Theme = { get, set, OPTIONS, renderSwitcher };
+  let quickPopover = null;
+  function closeQuickSwitcher() {
+    if (quickPopover) {
+      quickPopover.remove();
+      quickPopover = null;
+    }
+  }
+  function openQuickSwitcher(anchorEl) {
+    if (quickPopover) {
+      closeQuickSwitcher();
+      return;
+    }
+    const pop = document.createElement("div");
+    pop.className = "popover theme-popover";
+    renderSwitcher(pop, closeQuickSwitcher);
+    document.body.appendChild(pop);
+    const rect = anchorEl.getBoundingClientRect();
+    pop.style.top = window.scrollY + rect.bottom + 6 + "px";
+    pop.style.left = Math.max(8, window.scrollX + rect.right - pop.offsetWidth) + "px";
+    quickPopover = pop;
+    setTimeout(() => {
+      document.addEventListener("click", function clickHandler(e) {
+        if (!pop.contains(e.target) && e.target !== anchorEl) {
+          closeQuickSwitcher();
+          document.removeEventListener("click", clickHandler);
+        }
+      });
+      document.addEventListener("keydown", function keyHandler(e) {
+        if (e.key === "Escape") {
+          closeQuickSwitcher();
+          document.removeEventListener("keydown", keyHandler);
+        }
+      });
+    }, 0);
+  }
+
+  window.Theme = { get, set, OPTIONS, renderSwitcher, openQuickSwitcher };
 })();

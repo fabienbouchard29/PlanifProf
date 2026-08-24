@@ -283,7 +283,8 @@ h1, h2, h3, h4 {
   padding: 0.75rem 0 1.25rem;
 }
 
-.main-tab.icon-button {
+.main-tab.icon-button,
+.icon-button {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -298,7 +299,8 @@ h1, h2, h3, h4 {
   box-shadow: none;
 }
 
-.main-tab.icon-button:hover {
+.main-tab.icon-button:hover,
+.icon-button:hover {
   transform: translateY(-1px) rotate(20deg);
   box-shadow: var(--shadow-sm);
 }
@@ -310,7 +312,8 @@ h1, h2, h3, h4 {
   color: inherit;
 }
 
-.main-tab.icon-button .tab-icon {
+.main-tab.icon-button .tab-icon,
+.icon-button .tab-icon {
   font-size: 1.15rem;
 }
 
@@ -703,6 +706,13 @@ h1, h2, h3, h4 {
   flex-direction: column;
   gap: 0.3rem;
   max-width: 220px;
+}
+
+.theme-popover {
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 260px;
+  gap: 0.4rem;
 }
 
 .popover-title {
