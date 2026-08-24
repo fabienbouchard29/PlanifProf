@@ -12,6 +12,9 @@
       dayStart: "08:30",
       periodDuration: 50,
       breakMinutes: 0,
+      lunchEnabled: true,
+      lunchStart: "11:30",
+      lunchEnd: "12:20",
       modules: Object.assign({}, Modules.DEFAULTS),
       weatherCity: "",
     };
@@ -40,6 +43,7 @@
       cycleStartDate: answers.cycleStartDate,
       exceptions: [],
       cycleOverrides: {},
+      lunchTime: answers.lunchEnabled ? { start: answers.lunchStart, end: answers.lunchEnd } : null,
       days: Config.buildDefaultDays(answers.mode, answers.cycleLength),
     };
     cfg.days.forEach((day) => {
@@ -170,6 +174,15 @@
       <label>Combien de minutes de pause entre les cours ? (0 si aucune)
         <input type="number" id="ob-break-minutes" min="0" max="60" step="5" value="${answers.breakMinutes}" />
       </label>
+      <label class="checkbox-label"><input type="checkbox" id="ob-lunch-enabled" ${answers.lunchEnabled ? "checked" : ""} /> Afficher l'heure du dîner dans l'agenda</label>
+      <div id="ob-lunch-times" style="display:${answers.lunchEnabled ? "flex" : "none"}; gap:0.5rem;">
+        <label style="flex:1;">Début du dîner
+          <input type="time" id="ob-lunch-start" value="${answers.lunchStart}" />
+        </label>
+        <label style="flex:1;">Fin du dîner
+          <input type="time" id="ob-lunch-end" value="${answers.lunchEnd}" />
+        </label>
+      </div>
     `;
   }
 
@@ -219,6 +232,9 @@
       answers.dayStart = body.querySelector("#ob-day-start").value || "08:30";
       answers.periodDuration = parseInt(body.querySelector("#ob-period-duration").value, 10) || 50;
       answers.breakMinutes = parseInt(body.querySelector("#ob-break-minutes").value, 10) || 0;
+      answers.lunchEnabled = body.querySelector("#ob-lunch-enabled").checked;
+      answers.lunchStart = body.querySelector("#ob-lunch-start").value || "11:30";
+      answers.lunchEnd = body.querySelector("#ob-lunch-end").value || "12:20";
     }
     if (stepId === "modules") {
       body.querySelectorAll("[data-module]").forEach((el) => {
@@ -253,6 +269,13 @@
         render();
       });
     });
+
+    const lunchToggle = body.querySelector("#ob-lunch-enabled");
+    if (lunchToggle) {
+      lunchToggle.addEventListener("change", (e) => {
+        body.querySelector("#ob-lunch-times").style.display = e.target.checked ? "flex" : "none";
+      });
+    }
 
     const icsInput = body.querySelector("#ob-ics-input");
     if (icsInput) {
