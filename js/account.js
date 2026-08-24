@@ -55,6 +55,7 @@
           errorEl.textContent = "";
           try {
             await FirebaseSync.signIn(form.email.value, form.password.value);
+            if (window.AppNav) window.AppNav.showView("view-calendrier");
           } catch (err) {
             errorEl.textContent = translateAuthError(err);
           }
@@ -63,6 +64,8 @@
           errorEl.textContent = "";
           try {
             await FirebaseSync.signUp(form.email.value, form.password.value);
+            if (window.AppNav) window.AppNav.showView("view-calendrier");
+            if (window.Onboarding) Onboarding.open();
           } catch (err) {
             errorEl.textContent = translateAuthError(err);
           }
@@ -71,6 +74,7 @@
           errorEl.textContent = "";
           try {
             await FirebaseSync.signInGoogle();
+            if (window.AppNav) window.AppNav.showView("view-calendrier");
           } catch (err) {
             errorEl.textContent = translateAuthError(err);
           }

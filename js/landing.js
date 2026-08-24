@@ -44,6 +44,10 @@
         <span class="theme-swatch-dot" style="background:#1f3a5f"></span>
         Sérieux
       </button>
+      <button type="button" class="theme-swatch ${current === "sombre" ? "selected" : ""}" data-theme-choice="sombre">
+        <span class="theme-swatch-dot" style="background:#20222f"></span>
+        Sombre
+      </button>
     `;
     box.querySelectorAll("[data-theme-choice]").forEach((btn) => {
       btn.addEventListener("click", () => {

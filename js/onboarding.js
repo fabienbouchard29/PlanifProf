@@ -82,7 +82,34 @@
     close();
     if (window.applyModuleVisibility) window.applyModuleVisibility();
     if (window.rerenderCurrentView) window.rerenderCurrentView();
-    if (window.Tour) window.Tour.maybeAutoStart();
+    offerExceptionSetupIfNeeded();
+  }
+
+  // If no school calendar (.ics) was imported, the app has no idea which days are
+  // pédagogique/congé — propose marking them by hand right away instead of leaving it undiscovered.
+  function offerExceptionSetupIfNeeded() {
+    if (importSummary) {
+      if (window.Tour) window.Tour.maybeAutoStart();
+      return;
+    }
+    const wantsToMark = confirm(
+      "Vous n'avez pas importé de calendrier scolaire. Voulez-vous marquer dès maintenant vos journées pédagogiques et vos congés sur un mini-calendrier ?"
+    );
+    if (!wantsToMark) {
+      if (window.Tour) window.Tour.maybeAutoStart();
+      return;
+    }
+    if (window.AppNav) window.AppNav.showView("view-horaire");
+    setTimeout(() => {
+      const summary = Array.from(document.querySelectorAll(".settings-panel summary")).find((el) =>
+        el.textContent.includes("Marquer les jours sans école")
+      );
+      const details = summary && summary.closest("details");
+      if (!details) return;
+      details.open = true;
+      CalendarPicker.render(details.querySelector("div"));
+      details.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
   }
 
   function stepTemplateMode() {
@@ -251,7 +278,7 @@
       Config.ensureConfig();
       if (window.applyModuleVisibility) window.applyModuleVisibility();
       if (window.rerenderCurrentView) window.rerenderCurrentView();
-      if (window.Tour) window.Tour.maybeAutoStart();
+      offerExceptionSetupIfNeeded();
     });
     card.querySelector("#ob-next").addEventListener("click", () => {
       readStepInputs(stepId, body);

@@ -84,6 +84,33 @@
   display: none;
 }
 
+:root[data-theme="sombre"] {
+  color-scheme: dark;
+  --bg: #14151f;
+  --bg-alt: #1c1e2b;
+  --panel-bg: #20222f;
+  --text: #e7e8f1;
+  --muted: #9a9dae;
+  --border: #34374a;
+  --primary: #8183f4;
+  --primary-2: #a08cf5;
+  --primary-hover: #6d70e6;
+  --primary-soft: #2a2b45;
+  --danger: #f28b93;
+  --success: #4ade80;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.55);
+  --radius: 14px;
+  --radius-sm: 9px;
+}
+
+:root[data-theme="sombre"] .outlook-chip {
+  background: #23324a;
+  border-color: #3a5a86;
+  color: #d7e6fb;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -1906,6 +1933,7 @@ h1, h2, h3, h4 {
 
 .landing-theme-switch {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 0.5rem;
   margin-bottom: 1.25rem;
@@ -2185,6 +2213,38 @@ h1, h2, h3, h4 {
   .modal {
     display: none !important;
   }
+}
+
+/* Save confirmation toast */
+.save-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.4rem;
+  transform: translate(-50%, 12px);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--text);
+  color: white;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2500;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.save-toast.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.save-toast-icon {
+  color: #4ade80;
+  font-weight: 700;
 }
 
 /* Empty states */
