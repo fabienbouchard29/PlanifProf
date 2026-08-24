@@ -671,8 +671,7 @@ h1, h2, h3, h4 {
   margin-left: auto;
 }
 
-.weather-compact,
-.weather-compact-add {
+.weather-city-btn {
   border: 1px solid var(--border);
   background: var(--panel-bg);
   border-radius: 999px;
@@ -683,55 +682,16 @@ h1, h2, h3, h4 {
   color: var(--text);
 }
 
-.weather-compact:hover,
-.weather-compact-add:hover {
+.weather-city-btn:hover {
   border-color: var(--primary);
 }
 
-.weather-popover {
-  min-width: 260px;
-}
-
-.weather-popover .popover-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-weight: 600;
-  font-size: 0.82rem;
-  color: var(--text);
-}
-
-.weather-strip {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.25rem;
-  margin-top: 0.5rem;
-}
-
-.weather-day-chip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.3rem;
-  padding: 0.2rem;
-  border-radius: var(--radius-sm);
-  background: var(--bg);
-  text-align: center;
-}
-
-.wd-icon {
-  font-size: 0.95rem;
-}
-
-.wd-temp {
+.calendar-day-weather {
+  display: block;
   font-size: 0.68rem;
   font-weight: 600;
-  white-space: nowrap;
-}
-
-.wd-na {
-  color: var(--border);
-  font-size: 0.9rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
 }
 
 .upcoming-widget {
@@ -938,6 +898,7 @@ h1, h2, h3, h4 {
   border-top: 1px dashed rgba(0, 0, 0, 0.1);
   background: transparent;
   resize: none;
+  overflow: hidden;
   padding: 0;
   padding-top: 0.2rem;
   margin-top: 0.25rem;

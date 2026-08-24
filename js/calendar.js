@@ -138,8 +138,9 @@
       Store.set("showWeekends", e.target.checked);
       render(container);
     });
-    if (Modules.isEnabled("meteo")) {
-      Weather.render(nav.querySelector("#weather-widget"), weekStart, dayCount);
+    const weatherEnabled = Modules.isEnabled("meteo");
+    if (weatherEnabled) {
+      Weather.renderCityControl(nav.querySelector("#weather-widget"), () => render(container));
     }
 
     Reminders.renderUpcomingWidget(container);
@@ -180,8 +181,10 @@
       `;
       const noteArea = cell.querySelector(".calendar-cell-note");
       noteArea.value = (ev && ev.title) || "";
+      noteArea.title = noteArea.value;
       noteArea.addEventListener("click", (e) => e.stopPropagation());
       noteArea.addEventListener("input", () => {
+        noteArea.title = noteArea.value;
         const evs = getEvents();
         const key = keyFor(dIso, period.id);
         const existing = evs[key] || { title: "", subjectId: null, notes: "", highlight: null, taught: false };
@@ -204,6 +207,8 @@
       col.appendChild(cell);
     }
 
+    const weatherBadges = {};
+
     for (let i = 0; i < dayCount; i++) {
       const date = addDays(weekStart, i);
       const dIso = iso(date);
@@ -213,7 +218,8 @@
       const isToday = iso(new Date()) === dIso;
       col.innerHTML = `<div class="calendar-day-header ${isToday ? "today" : ""}">${formatDayHeader(date)}${
         templateDay ? `<span class="cycle-badge">${templateDay.label}</span>` : ""
-      }</div>`;
+      }${weatherEnabled ? `<span class="calendar-day-weather" id="wd-${dIso}"></span>` : ""}</div>`;
+      if (weatherEnabled) weatherBadges[dIso] = col.querySelector(`#wd-${dIso}`);
       Reminders.renderDayReminders(col, dIso);
       OutlookSync.forDate(dIso).forEach((ev) => {
         const chip = document.createElement("div");
@@ -256,6 +262,22 @@
       grid.appendChild(col);
     }
     container.appendChild(grid);
+
+    if (weatherEnabled && Weather.getCity()) {
+      Weather.fetchForecastMap()
+        .then((map) => {
+          if (!map) return;
+          Object.entries(weatherBadges).forEach(([dIso, el]) => {
+            if (!el) return;
+            const f = map[dIso];
+            if (f) {
+              el.textContent = `${f.icon} ${f.max}°/${f.min}°`;
+              el.title = f.desc;
+            }
+          });
+        })
+        .catch(() => {});
+    }
   }
 
   window.CalendarView = { render, getEvents };
