@@ -105,7 +105,11 @@
   --radius-sm: 9px;
 }
 
-:root[data-theme="sombre"] .outlook-chip {
+:root[data-theme="sombre"] .outlook-chip,
+:root[data-theme="tableau"] .outlook-chip,
+:root[data-theme="nuit"] .outlook-chip,
+:root[data-theme="halloween"] .outlook-chip,
+:root[data-theme="noel"] .outlook-chip {
   background: #23324a;
   border-color: #3a5a86;
   color: #d7e6fb;
@@ -184,6 +188,100 @@
   --primary-soft: #fbe4ee;
   --danger: #c65a4f;
   --success: #5da85e;
+}
+
+:root[data-theme="tableau"] {
+  color-scheme: dark;
+  --bg: #16241c;
+  --bg-alt: #1c2e23;
+  --panel-bg: #1f3327;
+  --text: #eef2ea;
+  --muted: #9fb3a3;
+  --border: #34493c;
+  --primary: #e8e2c8;
+  --primary-2: #cddb8a;
+  --primary-hover: #d6cfae;
+  --primary-soft: #2c4536;
+  --danger: #e08a7d;
+  --success: #8fd19e;
+}
+
+:root[data-theme="nuit"] {
+  color-scheme: dark;
+  --bg: #10102a;
+  --bg-alt: #171a3a;
+  --panel-bg: #1b1f45;
+  --text: #eef0ff;
+  --muted: #a5a9d6;
+  --border: #383c72;
+  --primary: #f0c14b;
+  --primary-2: #b98cf0;
+  --primary-hover: #d6a935;
+  --primary-soft: #2b2f5e;
+  --danger: #f2828f;
+  --success: #6fd3a8;
+}
+
+:root[data-theme="halloween"] {
+  color-scheme: dark;
+  --bg: #17131d;
+  --bg-alt: #1f1826;
+  --panel-bg: #241b2e;
+  --text: #f3ece0;
+  --muted: #b6a6b8;
+  --border: #3a2c42;
+  --primary: #ff8a2b;
+  --primary-2: #9b5de5;
+  --primary-hover: #e6721a;
+  --primary-soft: #33222f;
+  --danger: #ff4d4d;
+  --success: #7ec98f;
+}
+
+:root[data-theme="noel"] {
+  color-scheme: dark;
+  --bg: #101f16;
+  --bg-alt: #16281c;
+  --panel-bg: #1b3322;
+  --text: #f5f1e6;
+  --muted: #a9bcae;
+  --border: #2f4c37;
+  --primary: #c1272d;
+  --primary-2: #d4af37;
+  --primary-hover: #9c1f24;
+  --primary-soft: #2a4632;
+  --danger: #e0554f;
+  --success: #5fae6f;
+}
+
+:root[data-theme="pastel"] {
+  --bg: #fdf3fb;
+  --bg-alt: #fae7f6;
+  --panel-bg: #fffbfe;
+  --text: #3a2f3d;
+  --muted: #8f7f92;
+  --border: #f0d9ec;
+  --primary: #b98cd6;
+  --primary-2: #7fd4c9;
+  --primary-hover: #9c6fbd;
+  --primary-soft: #f2e3f7;
+  --danger: #e28a9a;
+  --success: #7fbf8a;
+}
+
+:root[data-theme="cafe"] {
+  --bg: #f3ece2;
+  --bg-alt: #e9dccb;
+  --panel-bg: #fbf6ef;
+  --text: #3d2b1f;
+  --muted: #8a7360;
+  --border: #ddc9b0;
+  --primary: #6f4e37;
+  --primary-2: #b9895a;
+  --primary-hover: #573a29;
+  --primary-soft: #ecdcc8;
+  --danger: #a3392c;
+  --success: #6b7c3a;
 }
 
 * {
@@ -712,6 +810,8 @@ h1, h2, h3, h4 {
   flex-direction: row;
   flex-wrap: wrap;
   max-width: 260px;
+  max-height: 70vh;
+  overflow-y: auto;
   gap: 0.4rem;
 }
 

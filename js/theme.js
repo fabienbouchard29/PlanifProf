@@ -8,6 +8,12 @@
     { key: "automne", label: "Automne", dot: "linear-gradient(135deg,#c1682f,#d98c3d)" },
     { key: "hiver", label: "Hiver", dot: "linear-gradient(135deg,#3a72a8,#eef3f8)" },
     { key: "printemps", label: "Printemps", dot: "linear-gradient(135deg,#d6689a,#8fbf6b)" },
+    { key: "tableau", label: "Tableau noir", dot: "linear-gradient(135deg,#1f3327,#cddb8a)" },
+    { key: "nuit", label: "Nuit étoilée", dot: "linear-gradient(135deg,#10102a,#f0c14b)" },
+    { key: "halloween", label: "Halloween", dot: "linear-gradient(135deg,#17131d,#ff8a2b)" },
+    { key: "noel", label: "Noël", dot: "linear-gradient(135deg,#c1272d,#1b3322)" },
+    { key: "pastel", label: "Pastel", dot: "linear-gradient(135deg,#b98cd6,#7fd4c9)" },
+    { key: "cafe", label: "Café", dot: "linear-gradient(135deg,#6f4e37,#e9dccb)" },
   ];
 
   function get() {

@@ -26,7 +26,7 @@
     tip.innerHTML = `
       <strong>${f.icon} ${f.desc}</strong>
       <div>Max ${f.max}° · Min ${f.min}°</div>
-      ${f.precip !== null && f.precip !== undefined ? `<div>🌧️ Probabilité de précipitation : ${f.precip}%</div>` : ""}
+      ${f.precip !== null && f.precip !== undefined ? `<div>🌧️ Précipitation : ${f.precip}%</div>` : ""}
       ${f.wind !== null && f.wind !== undefined ? `<div>💨 Vent : ${f.wind} km/h</div>` : ""}
       ${
         schoolHours.length
