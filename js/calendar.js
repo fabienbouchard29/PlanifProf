@@ -185,7 +185,22 @@
     const events = getEvents();
     const assignments = TemplateView.getAssignments();
 
+    function withLunch(periods) {
+      if (!cfg || !cfg.lunchTime || !cfg.lunchTime.start) return periods;
+      const lunch = { id: "lunch", label: "Dîner", start: cfg.lunchTime.start, end: cfg.lunchTime.end, type: "lunch" };
+      const merged = periods.concat([lunch]);
+      merged.sort((a, b) => (a.start || "").localeCompare(b.start || ""));
+      return merged;
+    }
+
     function renderPeriod(col, dIso, period, templateDay) {
+      if (period.type === "lunch") {
+        const lunchEl = document.createElement("div");
+        lunchEl.className = "calendar-lunch";
+        lunchEl.textContent = `🍽️ ${period.label}${period.start ? " · " + period.start : ""}${period.end ? "–" + period.end : ""}`;
+        col.appendChild(lunchEl);
+        return;
+      }
       if (period.type === "break") {
         const breakEl = document.createElement("div");
         breakEl.className = "calendar-break";
@@ -318,7 +333,7 @@
 
         const underlying = Config.getUnderlyingTemplateDay(date);
         if (underlying && underlying.periods.length) {
-          underlying.periods.forEach((period) => renderPeriod(periodsWrap, dIso, period, null));
+          withLunch(underlying.periods).forEach((period) => renderPeriod(periodsWrap, dIso, period, null));
         }
       } else if (!templateDay || !templateDay.periods.length) {
         const empty = document.createElement("div");
@@ -326,7 +341,7 @@
         empty.textContent = isWeekend ? "Fin de semaine" : "Aucun cours";
         periodsWrap.appendChild(empty);
       } else {
-        templateDay.periods.forEach((period) => renderPeriod(periodsWrap, dIso, period, templateDay));
+        withLunch(templateDay.periods).forEach((period) => renderPeriod(periodsWrap, dIso, period, templateDay));
       }
       grid.appendChild(col);
     }

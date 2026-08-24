@@ -194,6 +194,33 @@
     container.appendChild(subjectsSection);
     Subjects.renderManager(subjectsBody);
 
+    const lunch = cfg.lunchTime || null;
+    const lunchBox = document.createElement("div");
+    lunchBox.className = "lunch-time-box";
+    lunchBox.innerHTML = `
+      <h4 style="margin:1rem 0 0.4rem;">🍽️ Heure du dîner</h4>
+      <label class="checkbox-label"><input type="checkbox" id="lunch-enabled" ${lunch ? "checked" : ""} /> Afficher l'heure du dîner dans l'agenda, chaque jour d'école</label>
+      <div class="period-times" id="lunch-times" style="margin-top:0.4rem; ${lunch ? "" : "display:none"}">
+        <input type="time" id="lunch-start" value="${lunch ? lunch.start : "11:30"}" />
+        <input type="time" id="lunch-end" value="${lunch ? lunch.end : "12:20"}" />
+      </div>
+    `;
+    subjectsBody.appendChild(lunchBox);
+    function saveLunch() {
+      const enabled = lunchBox.querySelector("#lunch-enabled").checked;
+      cfg.lunchTime = enabled
+        ? { start: lunchBox.querySelector("#lunch-start").value || "11:30", end: lunchBox.querySelector("#lunch-end").value || "12:20" }
+        : null;
+      Config.saveConfig(cfg);
+      document.dispatchEvent(new CustomEvent("config-changed"));
+    }
+    lunchBox.querySelector("#lunch-enabled").addEventListener("change", (e) => {
+      lunchBox.querySelector("#lunch-times").style.display = e.target.checked ? "" : "none";
+      saveLunch();
+    });
+    lunchBox.querySelector("#lunch-start").addEventListener("change", saveLunch);
+    lunchBox.querySelector("#lunch-end").addEventListener("change", saveLunch);
+
     const grid = document.createElement("div");
     grid.className = "template-grid";
     cfg.days.forEach((day) => {
