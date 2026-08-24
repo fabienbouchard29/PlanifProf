@@ -742,6 +742,28 @@ h1, h2, h3, h4 {
   margin-top: 0.1rem;
 }
 
+.weather-tooltip .weather-hourly {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.weather-hour {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  font-size: 0.72rem;
+}
+
+.weather-hour b {
+  font-weight: 600;
+  opacity: 0.75;
+  font-size: 0.65rem;
+}
+
 .upcoming-widget {
   background: var(--panel-bg);
   border: 1px solid var(--border);

@@ -7,44 +7,65 @@
   }
 
   let filterTag = "";
+  let formOpen = false;
 
   function render(container) {
     container.innerHTML = "";
     const account = Account.getAccount();
     const limit = account.plan === "free" ? 20 : Infinity;
 
-    const form = document.createElement("form");
-    form.className = "resource-form";
-    form.innerHTML = `
-      <input type="text" name="title" placeholder="Titre de la ressource" required />
-      <input type="text" name="tags" placeholder="Étiquettes (séparées par virgules)" />
-      <input type="url" name="link" placeholder="Lien (optionnel)" />
-      <textarea name="description" placeholder="Description ou notes"></textarea>
-      <button class="btn btn-primary" type="submit">Ajouter à la banque</button>
-    `;
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const list = getResources();
-      if (list.length >= limit) {
-        alert(`La version gratuite est limitée à ${limit} ressources. Passez à PlanifProf Pro pour un nombre illimité.`);
-        return;
-      }
-      list.push({
-        id: Store.uuid(),
-        title: form.title.value.trim(),
-        tags: form.tags.value
-          .split(",")
-          .map((t) => t.trim())
-          .filter(Boolean),
-        link: form.link.value.trim(),
-        description: form.description.value.trim(),
-        createdAt: new Date().toISOString().slice(0, 10),
+    if (!formOpen) {
+      const openBtn = document.createElement("button");
+      openBtn.type = "button";
+      openBtn.className = "btn btn-primary resource-add-toggle";
+      openBtn.textContent = "+ Ajouter une ressource";
+      openBtn.addEventListener("click", () => {
+        formOpen = true;
+        render(container);
       });
-      saveResources(list);
-      form.reset();
-      render(container);
-    });
-    container.appendChild(form);
+      container.appendChild(openBtn);
+    } else {
+      const form = document.createElement("form");
+      form.className = "resource-form";
+      form.innerHTML = `
+        <input type="text" name="title" placeholder="Titre de la ressource" required />
+        <input type="text" name="tags" placeholder="Étiquettes (séparées par virgules)" />
+        <input type="url" name="link" placeholder="Lien (optionnel)" />
+        <textarea name="description" placeholder="Description ou notes"></textarea>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="resource-cancel">Annuler</button>
+          <button class="btn btn-primary" type="submit">Ajouter à la banque</button>
+        </div>
+      `;
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const list = getResources();
+        if (list.length >= limit) {
+          alert(`La version gratuite est limitée à ${limit} ressources. Passez à PlanifProf Pro pour un nombre illimité.`);
+          return;
+        }
+        list.push({
+          id: Store.uuid(),
+          title: form.title.value.trim(),
+          tags: form.tags.value
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean),
+          link: form.link.value.trim(),
+          description: form.description.value.trim(),
+          createdAt: new Date().toISOString().slice(0, 10),
+        });
+        saveResources(list);
+        formOpen = false;
+        render(container);
+      });
+      form.querySelector("#resource-cancel").addEventListener("click", () => {
+        formOpen = false;
+        render(container);
+      });
+      container.appendChild(form);
+      form.querySelector('[name="title"]').focus();
+    }
 
     const searchInput = document.createElement("input");
     searchInput.type = "search";
@@ -69,9 +90,12 @@
       if (!filtered.length) {
         EmptyState.render(listBox, {
           icon: "📚",
-          text: filterTag
-            ? "Aucune ressource ne correspond à cette recherche."
-            : "Votre banque est vide pour l'instant — ajoutez votre première ressource ci-dessus.",
+          text: filterTag ? "Aucune ressource ne correspond à cette recherche." : "Votre banque est vide pour l'instant.",
+          ctaLabel: filterTag ? null : "Ajouter ma première ressource",
+          onClick: () => {
+            formOpen = true;
+            render(container);
+          },
         });
         return;
       }

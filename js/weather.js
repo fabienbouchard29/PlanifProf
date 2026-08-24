@@ -38,17 +38,41 @@
 
   async function fetchDailyForecast(lat, lon) {
     const res = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max&timezone=auto&past_days=7&forecast_days=7`
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+        `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max` +
+        `&hourly=temperature_2m,weather_code,precipitation_probability` +
+        `&timezone=auto&past_days=7&forecast_days=7`
     );
     return res.json();
   }
 
-  // Returns a map of { "YYYY-MM-DD": { icon, max, min, desc, precip, wind } } for a city, or null if no city set.
+  function groupHourlyByDate(data) {
+    const byDate = {};
+    const times = (data.hourly && data.hourly.time) || [];
+    times.forEach((t, idx) => {
+      const [dIso, hh] = t.split("T");
+      const hour = parseInt(hh, 10);
+      const code = data.hourly.weather_code[idx];
+      const desc = WEATHER_CODES[code] || "🌡️ —";
+      if (!byDate[dIso]) byDate[dIso] = [];
+      byDate[dIso].push({
+        hour,
+        icon: desc.split(" ")[0],
+        temp: Math.round(data.hourly.temperature_2m[idx]),
+        precip: data.hourly.precipitation_probability ? Math.round(data.hourly.precipitation_probability[idx]) : null,
+      });
+    });
+    return byDate;
+  }
+
+  // Returns a map of { "YYYY-MM-DD": { icon, max, min, desc, precip, wind, hours: [{hour, icon, temp, precip}, …] } }
+  // for a city, or null if no city set. `hours` covers the full day, 0-23.
   async function fetchForecastMap() {
     const city = getCity();
     if (!city) return null;
     const data = await fetchDailyForecast(city.lat, city.lon);
     const days = (data.daily && data.daily.time) || [];
+    const hourlyByDate = groupHourlyByDate(data);
     const map = {};
     days.forEach((dIso, idx) => {
       const code = data.daily.weather_code[idx];
@@ -60,6 +84,7 @@
         desc: desc.replace(/^\S+\s*/, ""),
         precip: data.daily.precipitation_probability_max ? Math.round(data.daily.precipitation_probability_max[idx]) : null,
         wind: data.daily.wind_speed_10m_max ? Math.round(data.daily.wind_speed_10m_max[idx]) : null,
+        hours: hourlyByDate[dIso] || [],
       };
     });
     return map;

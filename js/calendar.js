@@ -20,6 +20,7 @@
   }
   function showWeatherTooltip(el, f) {
     hideWeatherTooltip();
+    const schoolHours = (f.hours || []).filter((h) => [8, 10, 12, 14, 16].includes(h.hour));
     const tip = document.createElement("div");
     tip.className = "note-tooltip weather-tooltip";
     tip.innerHTML = `
@@ -27,6 +28,13 @@
       <div>Max ${f.max}° · Min ${f.min}°</div>
       ${f.precip !== null && f.precip !== undefined ? `<div>🌧️ Probabilité de précipitation : ${f.precip}%</div>` : ""}
       ${f.wind !== null && f.wind !== undefined ? `<div>💨 Vent : ${f.wind} km/h</div>` : ""}
+      ${
+        schoolHours.length
+          ? `<div class="weather-hourly">${schoolHours
+              .map((h) => `<span class="weather-hour"><b>${String(h.hour).padStart(2, "0")}h</b>${h.icon}${h.temp}°</span>`)
+              .join("")}</div>`
+          : ""
+      }
     `;
     document.body.appendChild(tip);
     const rect = el.getBoundingClientRect();
