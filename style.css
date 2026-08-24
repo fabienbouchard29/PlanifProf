@@ -16,6 +16,15 @@
   --shadow-lg: 0 16px 40px rgba(30, 33, 48, 0.14);
   --radius: 14px;
   --radius-sm: 9px;
+  --focus-ring: #f59e0b;
+}
+
+/* Visible, high-contrast focus ring for keyboard navigation, consistent across themes.
+   (Only shows for keyboard focus, not mouse clicks — :focus-visible handles that split.) */
+:focus-visible {
+  outline: 2.5px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 :root[data-theme="serieux"] {
@@ -2176,4 +2185,75 @@ h1, h2, h3, h4 {
   .modal {
     display: none !important;
   }
+}
+
+/* Empty states */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+  padding: 2.2rem 1.5rem;
+  color: var(--muted);
+}
+
+.empty-state-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.empty-state p {
+  max-width: 32ch;
+  margin: 0;
+}
+
+.empty-state .btn {
+  margin-top: 0.3rem;
+}
+
+/* Guided tour */
+.tour-highlight {
+  position: relative;
+  z-index: 2100;
+  box-shadow: 0 0 0 4px var(--focus-ring), var(--shadow-lg);
+  border-radius: var(--radius-sm);
+}
+
+.tour-card {
+  position: absolute;
+  z-index: 2101;
+  max-width: 280px;
+  background: var(--panel-bg);
+  color: var(--text);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.tour-step-count {
+  margin: 0 0 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tour-card h4 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+
+.tour-card p:not(.tour-step-count) {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.tour-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
 }

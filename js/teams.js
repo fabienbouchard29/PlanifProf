@@ -68,7 +68,12 @@
     container.innerHTML = "";
     const groups = Students.getGroups();
     if (!groups.length) {
-      container.innerHTML = '<p class="muted">Créez d\'abord un groupe dans l\'onglet Élèves.</p>';
+      EmptyState.render(container, {
+        icon: "🤝",
+        text: "Vous n'avez pas encore de groupe. Créez-en un pour former des équipes équilibrées.",
+        ctaLabel: "Créer mon premier groupe",
+        onClick: () => AppNav.showSubView("sub-groupes"),
+      });
       return;
     }
     if (!selectedGroupId) selectedGroupId = groups[0].id;

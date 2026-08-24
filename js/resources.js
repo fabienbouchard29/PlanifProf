@@ -67,7 +67,12 @@
         (r) => !filterTag || r.title.toLowerCase().includes(filterTag) || r.tags.some((t) => t.toLowerCase().includes(filterTag))
       );
       if (!filtered.length) {
-        listBox.innerHTML = '<p class="muted">Aucune ressource pour l\'instant.</p>';
+        EmptyState.render(listBox, {
+          icon: "📚",
+          text: filterTag
+            ? "Aucune ressource ne correspond à cette recherche."
+            : "Votre banque est vide pour l'instant — ajoutez votre première ressource ci-dessus.",
+        });
         return;
       }
       filtered.forEach((r) => {

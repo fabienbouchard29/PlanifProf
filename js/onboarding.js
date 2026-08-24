@@ -82,6 +82,7 @@
     close();
     if (window.applyModuleVisibility) window.applyModuleVisibility();
     if (window.rerenderCurrentView) window.rerenderCurrentView();
+    if (window.Tour) window.Tour.maybeAutoStart();
   }
 
   function stepTemplateMode() {
@@ -250,6 +251,7 @@
       Config.ensureConfig();
       if (window.applyModuleVisibility) window.applyModuleVisibility();
       if (window.rerenderCurrentView) window.rerenderCurrentView();
+      if (window.Tour) window.Tour.maybeAutoStart();
     });
     card.querySelector("#ob-next").addEventListener("click", () => {
       readStepInputs(stepId, body);

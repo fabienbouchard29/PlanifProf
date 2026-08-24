@@ -18,7 +18,12 @@
     container.innerHTML = "";
     const groups = Students.getGroups();
     if (!groups.length) {
-      container.innerHTML = '<p class="muted">Créez d\'abord un groupe dans l\'onglet Élèves.</p>';
+      EmptyState.render(container, {
+        icon: "🧑‍🎓",
+        text: "Vous n'avez pas encore de groupe. Créez-en un pour commencer à prendre les présences.",
+        ctaLabel: "Créer mon premier groupe",
+        onClick: () => AppNav.showSubView("sub-groupes"),
+      });
       return;
     }
     if (!selectedGroupId) selectedGroupId = groups[0].id;
@@ -65,7 +70,12 @@
     });
 
     if (!students.length) {
-      container.innerHTML += '<p class="muted">Ce groupe n\'a pas encore d\'élèves.</p>';
+      EmptyState.render(container, {
+        icon: "➕",
+        text: "Ce groupe n'a pas encore d'élèves. Ajoutez-en quelques-uns pour commencer.",
+        ctaLabel: "Ajouter des élèves",
+        onClick: () => AppNav.showSubView("sub-groupes"),
+      });
       return;
     }
 

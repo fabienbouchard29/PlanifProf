@@ -93,6 +93,7 @@
 
   window.applyModuleVisibility = applyModuleVisibility;
   window.rerenderCurrentView = rerenderCurrentView;
+  window.AppNav = { showView, showSubView };
 
   applyModuleVisibility();
   showView("view-calendrier");
@@ -122,6 +123,9 @@
 
   const aboutLink = document.getElementById("about-link");
   if (aboutLink) aboutLink.addEventListener("click", () => Landing.open());
+
+  const tourLink = document.getElementById("tour-link");
+  if (tourLink) tourLink.addEventListener("click", () => Tour.start());
 
   const outlookCfg = OutlookSync.getSyncConfig();
   if (outlookCfg.icsUrl) {

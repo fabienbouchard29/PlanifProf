@@ -65,23 +65,24 @@
   <footer class="app-footer">
     <p>Vos données sont sauvegardées dans ce navigateur. Utilisez l'onglet Compte pour exporter/importer une sauvegarde entre appareils.</p>
     <button type="button" class="footer-link" id="about-link">ℹ️ À propos de PlanifProf</button>
+    <button type="button" class="footer-link" id="tour-link">🧭 Visite guidée</button>
   </footer>
 
   <div class="sticky-layer" id="sticky-layer"></div>
 
   <div class="onboarding-overlay" id="landing-overlay">
-    <div class="onboarding-card landing-card" id="landing-card"></div>
+    <div class="onboarding-card landing-card" id="landing-card" role="dialog" aria-modal="true" aria-label="Bienvenue dans PlanifProf"></div>
   </div>
 
   <div class="onboarding-overlay" id="onboarding-overlay">
-    <div class="onboarding-card" id="onboarding-card"></div>
+    <div class="onboarding-card" id="onboarding-card" role="dialog" aria-modal="true" aria-label="Assistant de configuration"></div>
   </div>
 
   <div class="modal" id="event-modal">
-    <div class="modal-content">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="event-modal-title">
       <div class="modal-header">
-        <h3 class="modal-title">Événement</h3>
-        <button type="button" class="modal-close">✕</button>
+        <h3 class="modal-title" id="event-modal-title">Événement</h3>
+        <button type="button" class="modal-close" aria-label="Fermer">✕</button>
       </div>
       <form id="event-form">
         <label>Titre
@@ -112,10 +113,10 @@
   </div>
 
   <div class="modal" id="reminder-modal">
-    <div class="modal-content">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="reminder-modal-title">
       <div class="modal-header">
-        <h3 class="modal-title">Rappel</h3>
-        <button type="button" class="modal-close">✕</button>
+        <h3 class="modal-title" id="reminder-modal-title">Rappel</h3>
+        <button type="button" class="modal-close" aria-label="Fermer">✕</button>
       </div>
       <form id="reminder-form">
         <label>Titre
@@ -136,10 +137,10 @@
   </div>
 
   <div class="modal" id="ocr-modal">
-    <div class="modal-content">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="ocr-modal-title">
       <div class="modal-header">
-        <h3>Importer une photo d'horaire</h3>
-        <button type="button" class="modal-close">✕</button>
+        <h3 id="ocr-modal-title">Importer une photo d'horaire</h3>
+        <button type="button" class="modal-close" aria-label="Fermer">✕</button>
       </div>
       <p class="muted">Prenez une photo ou choisissez une image de votre horaire papier. Le texte est reconnu automatiquement — vérifiez-le avant de l'utiliser, la reconnaissance n'est jamais garantie à 100 %.</p>
       <input type="file" id="ocr-file-input" accept="image/*" capture="environment" />
@@ -149,10 +150,10 @@
   </div>
 
   <div class="modal" id="pdf-import-modal">
-    <div class="modal-content modal-content-wide">
+    <div class="modal-content modal-content-wide" role="dialog" aria-modal="true" aria-labelledby="pdf-import-modal-title">
       <div class="modal-header">
-        <h3>Importer un calendrier scolaire (PDF)</h3>
-        <button type="button" class="modal-close">✕</button>
+        <h3 id="pdf-import-modal-title">Importer un calendrier scolaire (PDF)</h3>
+        <button type="button" class="modal-close" aria-label="Fermer">✕</button>
       </div>
       <p class="muted">On va lire le PDF et essayer de repérer les congés, journées pédagogiques et numéros de cycle. Vérifiez toujours la liste avant de l'appliquer — la mise en page des calendriers varie beaucoup d'une école à l'autre.</p>
       <input type="file" id="pdf-file-input" accept="application/pdf" />
@@ -171,6 +172,7 @@
   <script src="js/ms-config.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/storage.js"></script>
+  <script src="js/empty-state.js"></script>
   <script src="js/theme.js"></script>
   <script src="js/subjects.js"></script>
   <script src="js/config.js"></script>
@@ -195,9 +197,11 @@
   <script src="js/exports.js"></script>
   <script src="js/account.js"></script>
   <script src="js/onboarding.js"></script>
+  <script src="js/tour.js"></script>
   <script src="js/landing.js"></script>
   <script src="js/app.js"></script>
   <script src="js/sticky-notes.js"></script>
+  <script src="js/a11y-modal.js"></script>
   <script type="module" src="js/firebase-sync.js"></script>
 </body>
 </html>

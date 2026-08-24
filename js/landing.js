@@ -119,7 +119,7 @@
     const isLoggedIn = !!(window.FirebaseSync && FirebaseSync.getCurrentUser());
 
     card.innerHTML = `
-      ${isLoggedIn ? '<button type="button" class="modal-close landing-close" id="landing-close-btn">✕</button>' : ""}
+      ${isLoggedIn ? '<button type="button" class="modal-close landing-close" id="landing-close-btn" aria-label="Fermer">✕</button>' : ""}
       <div class="landing-brand">
         <span class="brand-mark">📘</span>
         <h1>PlanifProf</h1>

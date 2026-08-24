@@ -81,7 +81,10 @@
     main.className = "group-main";
 
     if (!selectedGroupId) {
-      main.innerHTML = '<p class="muted">Créez un groupe pour commencer.</p>';
+      EmptyState.render(main, {
+        icon: "👋",
+        text: "Bienvenue ! Ajoutez votre premier groupe à gauche pour commencer.",
+      });
     } else {
       const group = groups.find((g) => g.id === selectedGroupId);
       const header = document.createElement("div");
