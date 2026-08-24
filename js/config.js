@@ -97,5 +97,28 @@
     return null;
   }
 
-  window.Config = { getConfig, saveConfig, ensureConfig, regenerateDays, getTemplateDayForDate, buildDefaultDays, getExceptionType, EXCEPTION_TYPES };
+  // Like getTemplateDayForDate, but ignores exceptions/cycleOverrides — used to still show the
+  // usual period/hour slots (for writing notes) on a day marked congé/pédagogique.
+  function getUnderlyingTemplateDay(date) {
+    const cfg = getConfig();
+    if (!cfg) return null;
+    if (cfg.mode === "weekday") {
+      const dow = date.getDay();
+      if (dow === 0 || dow === 6) return null;
+      return cfg.days[dow - 1] || null;
+    }
+    return cfg.days[0] || null;
+  }
+
+  window.Config = {
+    getConfig,
+    saveConfig,
+    ensureConfig,
+    regenerateDays,
+    getTemplateDayForDate,
+    getUnderlyingTemplateDay,
+    buildDefaultDays,
+    getExceptionType,
+    EXCEPTION_TYPES,
+  };
 })();

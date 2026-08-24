@@ -879,6 +879,16 @@ h1, h2, h3, h4 {
   font-style: italic;
 }
 
+.calendar-exception-banner {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 0.2rem;
+  margin-bottom: 0.3rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
 .calendar-cell {
   position: relative;
   text-align: left;
@@ -904,17 +914,26 @@ h1, h2, h3, h4 {
   padding-right: 2.2rem;
 }
 
+.calendar-cell-subject {
+  font-size: 0.76rem;
+  font-weight: 700;
+  margin-top: 0.1rem;
+  user-select: none;
+}
+
 .calendar-cell-note {
   display: block;
   width: 100%;
   border: none;
+  border-top: 1px dashed rgba(0, 0, 0, 0.1);
   background: transparent;
   resize: none;
   padding: 0;
-  margin-top: 0.15rem;
+  padding-top: 0.2rem;
+  margin-top: 0.25rem;
   font-family: inherit;
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text);
   cursor: text;
 }

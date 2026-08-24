@@ -156,6 +156,60 @@
     const events = getEvents();
     const assignments = TemplateView.getAssignments();
 
+    function renderPeriod(col, dIso, period, templateDay) {
+      if (period.type === "break") {
+        const breakEl = document.createElement("div");
+        breakEl.className = "calendar-break";
+        breakEl.textContent = `${period.label}${period.start ? " · " + period.start : ""}${period.end ? "–" + period.end : ""}`;
+        col.appendChild(breakEl);
+        return;
+      }
+      const ev = events[keyFor(dIso, period.id)];
+      const templateSubjId = templateDay ? assignments[TemplateView.keyFor(templateDay.id, period.id)] : null;
+      const subjId = (ev && ev.subjectId) || templateSubjId;
+      const subj = subjId ? Subjects.getSubject(subjId) : null;
+      const cell = document.createElement("div");
+      cell.className = "calendar-cell" + (ev && ev.taught ? " taught" : "");
+      if (subj) {
+        cell.style.borderLeftColor = subj.color;
+        cell.style.background = subj.color + "15";
+      }
+      if (ev && ev.highlight) {
+        cell.classList.add("highlight-" + ev.highlight);
+      }
+      cell.innerHTML = `
+        <div class="calendar-cell-period">${period.label}${period.start ? " · " + period.start : ""}</div>
+        ${subj ? `<div class="calendar-cell-subject" style="color:${subj.color}">${subj.name}</div>` : ""}
+        <textarea class="calendar-cell-note" rows="2" placeholder="Écrire une note…"></textarea>
+        <button type="button" class="calendar-cell-more" title="Options (matière, surlignage, détails)">⋯</button>
+        <button type="button" class="calendar-cell-taught" title="Marquer comme enseignée">${ev && ev.taught ? "✓" : ""}</button>
+      `;
+      const noteArea = cell.querySelector(".calendar-cell-note");
+      noteArea.value = (ev && ev.title) || "";
+      noteArea.addEventListener("click", (e) => e.stopPropagation());
+      noteArea.addEventListener("input", () => {
+        const evs = getEvents();
+        const key = keyFor(dIso, period.id);
+        const existing = evs[key] || { title: "", subjectId: null, notes: "", highlight: null, taught: false };
+        existing.title = noteArea.value;
+        if (!existing.title.trim() && !existing.notes && !existing.highlight && !existing.taught && !existing.subjectId) {
+          delete evs[key];
+        } else {
+          evs[key] = existing;
+        }
+        saveEvents(evs);
+      });
+      cell.querySelector(".calendar-cell-more").addEventListener("click", (e) => {
+        e.stopPropagation();
+        openEventModal(dIso, period);
+      });
+      cell.querySelector(".calendar-cell-taught").addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleTaught(dIso, period);
+      });
+      col.appendChild(cell);
+    }
+
     for (let i = 0; i < dayCount; i++) {
       const date = addDays(weekStart, i);
       const dIso = iso(date);
@@ -181,74 +235,29 @@
         chip.textContent = `👥 ${ev.time ? ev.time + " " : ""}${ev.title}`;
         col.appendChild(chip);
       });
-      if (!templateDay || !templateDay.periods.length) {
+      const exceptionType = Config.getExceptionType(dIso);
+      const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+
+      if (exceptionType) {
+        const banner = document.createElement("div");
+        banner.className = "calendar-exception-banner";
+        banner.textContent = exceptionType.label;
+        banner.style.color = exceptionType.color;
+        col.style.background = exceptionType.color + "15";
+        col.style.borderColor = exceptionType.color;
+        col.appendChild(banner);
+
+        const underlying = Config.getUnderlyingTemplateDay(date);
+        if (underlying && underlying.periods.length) {
+          underlying.periods.forEach((period) => renderPeriod(col, dIso, period, null));
+        }
+      } else if (!templateDay || !templateDay.periods.length) {
         const empty = document.createElement("div");
         empty.className = "calendar-empty";
-        const exceptionType = Config.getExceptionType(dIso);
-        if (exceptionType) {
-          empty.textContent = exceptionType.label;
-          empty.style.color = exceptionType.color;
-          empty.style.fontStyle = "normal";
-          empty.style.fontWeight = "600";
-          col.style.background = exceptionType.color + "22";
-          col.style.borderColor = exceptionType.color;
-        } else {
-          empty.textContent = date.getDay() === 0 || date.getDay() === 6 ? "Fin de semaine" : "Aucun cours";
-        }
+        empty.textContent = isWeekend ? "Fin de semaine" : "Aucun cours";
         col.appendChild(empty);
       } else {
-        templateDay.periods.forEach((period) => {
-          if (period.type === "break") {
-            const breakEl = document.createElement("div");
-            breakEl.className = "calendar-break";
-            breakEl.textContent = `${period.label}${period.start ? " · " + period.start : ""}${period.end ? "–" + period.end : ""}`;
-            col.appendChild(breakEl);
-            return;
-          }
-          const ev = events[keyFor(dIso, period.id)];
-          const templateSubjId = assignments[TemplateView.keyFor(templateDay.id, period.id)];
-          const subjId = (ev && ev.subjectId) || templateSubjId;
-          const subj = subjId ? Subjects.getSubject(subjId) : null;
-          const cell = document.createElement("div");
-          cell.className = "calendar-cell" + (ev && ev.taught ? " taught" : "");
-          if (subj) {
-            cell.style.borderLeftColor = subj.color;
-            cell.style.background = subj.color + "15";
-          }
-          if (ev && ev.highlight) {
-            cell.classList.add("highlight-" + ev.highlight);
-          }
-          cell.innerHTML = `
-            <div class="calendar-cell-period">${period.label}${period.start ? " · " + period.start : ""}</div>
-            <textarea class="calendar-cell-note" rows="2" placeholder="${subj ? subj.name : "Écrire…"}"></textarea>
-            <button type="button" class="calendar-cell-more" title="Options (matière, surlignage, détails)">⋯</button>
-            <button type="button" class="calendar-cell-taught" title="Marquer comme enseignée">${ev && ev.taught ? "✓" : ""}</button>
-          `;
-          const noteArea = cell.querySelector(".calendar-cell-note");
-          noteArea.value = (ev && ev.title) || "";
-          noteArea.addEventListener("click", (e) => e.stopPropagation());
-          noteArea.addEventListener("input", () => {
-            const evs = getEvents();
-            const key = keyFor(dIso, period.id);
-            const existing = evs[key] || { title: "", subjectId: null, notes: "", highlight: null, taught: false };
-            existing.title = noteArea.value;
-            if (!existing.title.trim() && !existing.notes && !existing.highlight && !existing.taught && !existing.subjectId) {
-              delete evs[key];
-            } else {
-              evs[key] = existing;
-            }
-            saveEvents(evs);
-          });
-          cell.querySelector(".calendar-cell-more").addEventListener("click", (e) => {
-            e.stopPropagation();
-            openEventModal(dIso, period);
-          });
-          cell.querySelector(".calendar-cell-taught").addEventListener("click", (e) => {
-            e.stopPropagation();
-            toggleTaught(dIso, period);
-          });
-          col.appendChild(cell);
-        });
+        templateDay.periods.forEach((period) => renderPeriod(col, dIso, period, templateDay));
       }
       grid.appendChild(col);
     }
