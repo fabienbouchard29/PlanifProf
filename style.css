@@ -733,13 +733,17 @@ h1, h2, h3, h4 {
   border-radius: 4px;
 }
 
-.weather-tooltip strong {
-  display: block;
-  margin-bottom: 0.25rem;
+.weather-tooltip {
+  white-space: normal;
 }
 
-.weather-tooltip div + div {
-  margin-top: 0.1rem;
+.weather-tooltip strong {
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.weather-tooltip div {
+  line-height: 1.5;
 }
 
 .weather-tooltip .weather-hourly {
