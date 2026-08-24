@@ -11,6 +11,30 @@
 
   let weekStart = startOfWeek(new Date());
 
+  let weatherTooltip = null;
+  function hideWeatherTooltip() {
+    if (weatherTooltip) {
+      weatherTooltip.remove();
+      weatherTooltip = null;
+    }
+  }
+  function showWeatherTooltip(el, f) {
+    hideWeatherTooltip();
+    const tip = document.createElement("div");
+    tip.className = "note-tooltip weather-tooltip";
+    tip.innerHTML = `
+      <strong>${f.icon} ${f.desc}</strong>
+      <div>Max ${f.max}° · Min ${f.min}°</div>
+      ${f.precip !== null && f.precip !== undefined ? `<div>🌧️ Probabilité de précipitation : ${f.precip}%</div>` : ""}
+      ${f.wind !== null && f.wind !== undefined ? `<div>💨 Vent : ${f.wind} km/h</div>` : ""}
+    `;
+    document.body.appendChild(tip);
+    const rect = el.getBoundingClientRect();
+    tip.style.top = window.scrollY + rect.bottom + 4 + "px";
+    tip.style.left = window.scrollX + rect.left + "px";
+    weatherTooltip = tip;
+  }
+
   function startOfWeek(d) {
     const date = new Date(d);
     const day = date.getDay();
@@ -301,7 +325,12 @@
             const f = map[dIso];
             if (f) {
               el.textContent = `${f.icon} ${f.max}°/${f.min}°`;
-              el.title = f.desc;
+              el.setAttribute("tabindex", "0");
+              el.setAttribute("aria-label", `Météo : ${f.desc}, maximum ${f.max} degrés, minimum ${f.min} degrés`);
+              el.addEventListener("mouseenter", () => showWeatherTooltip(el, f));
+              el.addEventListener("mouseleave", hideWeatherTooltip);
+              el.addEventListener("focus", () => showWeatherTooltip(el, f));
+              el.addEventListener("blur", hideWeatherTooltip);
             }
           });
         })

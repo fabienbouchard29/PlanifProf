@@ -38,12 +38,12 @@
 
   async function fetchDailyForecast(lat, lon) {
     const res = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&past_days=7&forecast_days=7`
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max&timezone=auto&past_days=7&forecast_days=7`
     );
     return res.json();
   }
 
-  // Returns a map of { "YYYY-MM-DD": { icon, max, min, desc } } for a city, or null if no city set.
+  // Returns a map of { "YYYY-MM-DD": { icon, max, min, desc, precip, wind } } for a city, or null if no city set.
   async function fetchForecastMap() {
     const city = getCity();
     if (!city) return null;
@@ -58,6 +58,8 @@
         max: Math.round(data.daily.temperature_2m_max[idx]),
         min: Math.round(data.daily.temperature_2m_min[idx]),
         desc: desc.replace(/^\S+\s*/, ""),
+        precip: data.daily.precipitation_probability_max ? Math.round(data.daily.precipitation_probability_max[idx]) : null,
+        wind: data.daily.wind_speed_10m_max ? Math.round(data.daily.wind_speed_10m_max[idx]) : null,
       };
     });
     return map;

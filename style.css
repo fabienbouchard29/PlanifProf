@@ -728,6 +728,18 @@ h1, h2, h3, h4 {
   font-weight: 600;
   color: var(--muted);
   margin-top: 0.1rem;
+  width: fit-content;
+  cursor: help;
+  border-radius: 4px;
+}
+
+.weather-tooltip strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.weather-tooltip div + div {
+  margin-top: 0.1rem;
 }
 
 .upcoming-widget {
