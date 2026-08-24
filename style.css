@@ -1606,6 +1606,57 @@ h1, h2, h3, h4 {
   margin-top: 0.85rem;
 }
 
+.picker-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .picker-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.picker-reference {
+  position: sticky;
+  top: 4.5rem;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  box-shadow: var(--shadow-sm);
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+}
+
+@media (max-width: 900px) {
+  .picker-reference {
+    position: static;
+    max-height: none;
+  }
+}
+
+.picker-reference-media {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-sm);
+  margin-top: 0.6rem;
+}
+
+.picker-reference-remove {
+  float: right;
+}
+
+.picker-reference-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
 .mini-month {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);

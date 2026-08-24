@@ -10,6 +10,110 @@
   let quickMode = null; // null = "choisir à chaque clic", "retirer", or an EXCEPTION_TYPES key
   let countLabelEl = null;
 
+  // Reference photo/PDF of the school calendar, kept visible next to the picker for this
+  // session only (not saved) — just a memory aid while clicking through the months by hand.
+  let referenceFile = null;
+  let referenceImageUrl = null;
+  let referencePdf = null;
+  let referencePage = 1;
+
+  function clearReference() {
+    if (referenceImageUrl) URL.revokeObjectURL(referenceImageUrl);
+    referenceFile = null;
+    referenceImageUrl = null;
+    referencePdf = null;
+    referencePage = 1;
+  }
+
+  async function loadReferenceFile(file, container) {
+    clearReference();
+    referenceFile = file;
+    if (file.type === "application/pdf") {
+      if (typeof pdfjsLib === "undefined") {
+        alert("Le lecteur de PDF n'a pas pu se charger (connexion internet requise).");
+        referenceFile = null;
+        return;
+      }
+      const buf = await file.arrayBuffer();
+      referencePdf = await pdfjsLib.getDocument({ data: buf }).promise;
+      referencePage = 1;
+    } else {
+      referenceImageUrl = URL.createObjectURL(file);
+    }
+    render(container);
+  }
+
+  async function renderReferencePdfPage(canvas) {
+    const page = await referencePdf.getPage(referencePage);
+    const viewport = page.getViewport({ scale: 1.3 });
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+  }
+
+  function renderReferencePanel(container) {
+    const box = document.createElement("div");
+    box.className = "picker-reference";
+
+    if (!referenceFile) {
+      box.innerHTML = `
+        <p class="muted" style="margin-top:0;">Gardez une photo ou le PDF de votre calendrier scolaire affiché ici pendant que vous cliquez sur les jours à droite.</p>
+        <label class="onboarding-upload" style="display:inline-flex;">
+          📎 Choisir une photo ou un PDF
+          <input type="file" id="cp-reference-input" accept="image/*,application/pdf" hidden />
+        </label>
+      `;
+      box.querySelector("#cp-reference-input").addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) loadReferenceFile(file, container);
+      });
+      return box;
+    }
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "btn btn-ghost btn-small picker-reference-remove";
+    removeBtn.textContent = "✕ Retirer";
+    removeBtn.addEventListener("click", () => {
+      clearReference();
+      render(container);
+    });
+    box.appendChild(removeBtn);
+
+    if (referenceImageUrl) {
+      const img = document.createElement("img");
+      img.src = referenceImageUrl;
+      img.className = "picker-reference-media";
+      img.alt = "Calendrier scolaire importé";
+      box.appendChild(img);
+    } else if (referencePdf) {
+      const canvas = document.createElement("canvas");
+      canvas.className = "picker-reference-media";
+      box.appendChild(canvas);
+      renderReferencePdfPage(canvas);
+
+      if (referencePdf.numPages > 1) {
+        const nav = document.createElement("div");
+        nav.className = "picker-reference-nav";
+        nav.innerHTML = `
+          <button type="button" class="btn btn-ghost btn-small" id="cp-ref-prev" ${referencePage <= 1 ? "disabled" : ""}>◀</button>
+          <span class="muted">Page ${referencePage} / ${referencePdf.numPages}</span>
+          <button type="button" class="btn btn-ghost btn-small" id="cp-ref-next" ${referencePage >= referencePdf.numPages ? "disabled" : ""}>▶</button>
+        `;
+        nav.querySelector("#cp-ref-prev").addEventListener("click", () => {
+          referencePage = Math.max(1, referencePage - 1);
+          render(container);
+        });
+        nav.querySelector("#cp-ref-next").addEventListener("click", () => {
+          referencePage = Math.min(referencePdf.numPages, referencePage + 1);
+          render(container);
+        });
+        box.appendChild(nav);
+      }
+    }
+    return box;
+  }
+
   function toISO(d) {
     return d.toISOString().slice(0, 10);
   }
@@ -191,6 +295,13 @@
     const s = ensureState();
     container.innerHTML = "";
 
+    const layout = document.createElement("div");
+    layout.className = "picker-layout";
+    layout.appendChild(renderReferencePanel(container));
+    const mainCol = document.createElement("div");
+    layout.appendChild(mainCol);
+    container.appendChild(layout);
+
     const controls = document.createElement("div");
     controls.className = "settings-body";
     controls.innerHTML = `
@@ -201,7 +312,7 @@
       <button type="button" class="btn btn-ghost" id="cp-qc-holidays">🍁 Ajouter les congés fériés du Québec</button>
       <span class="muted" id="cp-count"></span>
     `;
-    container.appendChild(controls);
+    mainCol.appendChild(controls);
     countLabelEl = controls.querySelector("#cp-count");
 
     controls.querySelector("#cp-qc-holidays").addEventListener("click", () => {
@@ -281,21 +392,21 @@
       render(container);
     });
     modeBar.appendChild(removeChip);
-    container.appendChild(modeBar);
+    mainCol.appendChild(modeBar);
 
     const legend = document.createElement("div");
     legend.className = "mini-legend";
     legend.innerHTML = Config.EXCEPTION_TYPES.map(
       (t) => `<span class="mini-legend-item"><span class="mini-legend-dot" style="background:${t.color}"></span>${t.label}</span>`
     ).join("");
-    container.appendChild(legend);
+    mainCol.appendChild(legend);
 
     const grid = document.createElement("div");
     grid.className = "mini-month-grid-wrap";
     monthsFrom(s.startYear, s.startMonth, 12).forEach(({ year, month }) => {
       grid.appendChild(renderMonth(cfg, year, month, container));
     });
-    container.appendChild(grid);
+    mainCol.appendChild(grid);
   }
 
   window.CalendarPicker = { render };
