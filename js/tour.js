@@ -1,21 +1,57 @@
 (function () {
   const STEPS = [
     {
+      view: "view-calendrier",
       selector: ".calendar-cell-note",
       title: "Écrivez directement ici",
       text: "Cliquez dans une case et tapez, comme sur un agenda papier. La période et la matière restent affichées au-dessus, elles ne bougent pas.",
     },
     {
+      view: "view-calendrier",
+      selector: ".calendar-cell-more",
+      title: "Plus d'options par période",
+      text: "Le bouton « … » ouvre la fiche complète : matière, surlignage couleur et une case à cocher « Période enseignée ✓ ».",
+    },
+    {
+      view: "view-calendrier",
       selector: "#sticky-fab",
       title: "Un post-it, n'importe où",
       text: "Ajoutez une note libre et glissez-la où vous voulez sur l'écran — pratique pour un pense-bête rapide.",
     },
     {
+      view: "view-calendrier",
+      selector: ".calendar-day-weather",
+      title: "Météo détaillée",
+      text: "Passez la souris (ou touchez) sur la météo d'une journée pour voir le détail heure par heure.",
+    },
+    {
+      view: "view-calendrier",
+      selector: "#theme-quick-button",
+      title: "Changez de thème en un clic",
+      text: "14 thèmes vous attendent ici — saisons, Halloween, Noël, mode sombre… sans passer par les Paramètres.",
+    },
+    {
+      view: "view-eleves",
+      subview: "sub-groupes",
+      selector: ".student-import-btn",
+      title: "Importez votre liste de classe",
+      text: "Un fichier Word, Excel ou PDF avec vos noms d'élèves ? Ce bouton les ajoute pour vous — vérifiez juste la liste avant de confirmer.",
+    },
+    {
+      view: "view-eleves",
+      subview: "sub-presences",
+      selector: "#att-print",
+      title: "Imprimez en un clic",
+      text: "Présences, évaluations, groupes : chacun a son bouton Imprimer, prêt pour le format papier.",
+    },
+    {
+      view: "view-calendrier",
       selector: "#account-button",
       title: "Toujours sauvegardé",
       text: "Votre compte enseignant synchronise tout, automatiquement, entre vos appareils.",
     },
     {
+      view: "view-calendrier",
       selector: "#settings-button",
       title: "Personnalisez à votre rythme",
       text: "Horaire, matières, apparence, outils affichés… tout se change ici, quand vous voulez.",
@@ -58,11 +94,21 @@
     Store.set("tourSeen", true);
   }
 
+  function goToStepView(step) {
+    if (!window.AppNav) return;
+    if (step.view) window.AppNav.showView(step.view);
+    if (step.subview) window.AppNav.showSubView(step.subview);
+  }
+
   function showStep() {
     document.querySelectorAll(".tour-highlight").forEach((el) => el.classList.remove("tour-highlight"));
     if (cardEl) cardEl.remove();
 
-    while (stepIndex < STEPS.length && !document.querySelector(STEPS[stepIndex].selector)) stepIndex++;
+    while (stepIndex < STEPS.length) {
+      goToStepView(STEPS[stepIndex]);
+      if (document.querySelector(STEPS[stepIndex].selector)) break;
+      stepIndex++;
+    }
     if (stepIndex >= STEPS.length) {
       end();
       return;
@@ -92,18 +138,18 @@
     cardEl.querySelector("#tour-skip").addEventListener("click", end);
     cardEl.querySelector("#tour-next").addEventListener("click", () => {
       stepIndex++;
-      showStep();
+      setTimeout(showStep, 120);
     });
     cardEl.querySelector("#tour-next").focus();
   }
 
   function start() {
     cleanup();
-    if (window.AppNav) window.AppNav.showView("view-calendrier");
     stepIndex = 0;
     Store.set("tourSeen", true);
     document.addEventListener("keydown", onKeydown);
     window.addEventListener("resize", reposition);
+    if (window.AppNav) window.AppNav.showView("view-calendrier");
     setTimeout(showStep, 150);
   }
 

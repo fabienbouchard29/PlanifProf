@@ -2570,6 +2570,38 @@ h1, h2, h3, h4 {
   }
 }
 
+/* Install-as-app hint banner */
+.install-hint {
+  position: fixed;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: max(0.75rem, env(safe-area-inset-bottom));
+  z-index: 2400;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  background: var(--panel-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem 0.9rem;
+  box-shadow: var(--shadow-lg);
+  font-size: 0.85rem;
+}
+
+.install-hint-text {
+  flex: 1;
+  min-width: 200px;
+}
+
+.install-hint-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
 /* Save confirmation toast */
 .save-toast {
   position: fixed;

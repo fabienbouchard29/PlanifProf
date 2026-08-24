@@ -127,6 +127,9 @@
   const tourLink = document.getElementById("tour-link");
   if (tourLink) tourLink.addEventListener("click", () => Tour.start());
 
+  const installLink = document.getElementById("install-link");
+  if (installLink) installLink.addEventListener("click", () => InstallHint.showBanner());
+
   const themeQuickButton = document.getElementById("theme-quick-button");
   if (themeQuickButton) {
     themeQuickButton.addEventListener("click", (e) => {
