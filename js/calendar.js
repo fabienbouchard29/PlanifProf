@@ -111,17 +111,14 @@
     const showWeekends = Store.get("showWeekends", true);
     const dayCount = showWeekends ? 7 : 5;
 
-    const rangeLabel = document.createElement("h3");
-    rangeLabel.className = "calendar-range-label";
-    rangeLabel.textContent = formatRangeLabel(weekStart, addDays(weekStart, dayCount - 1));
-    container.appendChild(rangeLabel);
-
     const nav = document.createElement("div");
     nav.className = "calendar-nav";
     nav.innerHTML = `
-      <button type="button" class="btn btn-ghost" id="cal-prev">◀ Semaine précédente</button>
-      <button type="button" class="btn btn-ghost" id="cal-today">Aujourd'hui</button>
-      <button type="button" class="btn btn-ghost" id="cal-next">Semaine suivante ▶</button>
+      <button type="button" class="cal-nav-icon" id="cal-prev" title="Semaine précédente">◀</button>
+      <h3 class="calendar-range-label">${formatRangeLabel(weekStart, addDays(weekStart, dayCount - 1))}</h3>
+      <button type="button" class="cal-nav-icon" id="cal-next" title="Semaine suivante">▶</button>
+      <button type="button" class="btn btn-ghost btn-small" id="cal-today">Aujourd'hui</button>
+      <span id="weather-widget"></span>
       <label class="weekend-toggle"><input type="checkbox" id="cal-show-weekends" ${showWeekends ? "checked" : ""} /> Fins de semaine</label>
     `;
     container.appendChild(nav);
@@ -142,10 +139,7 @@
       render(container);
     });
     if (Modules.isEnabled("meteo")) {
-      const weatherEl = document.createElement("div");
-      weatherEl.id = "weather-widget";
-      container.appendChild(weatherEl);
-      Weather.render(weatherEl, weekStart, dayCount);
+      Weather.render(nav.querySelector("#weather-widget"), weekStart, dayCount);
     }
 
     Reminders.renderUpcomingWidget(container);

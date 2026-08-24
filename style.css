@@ -626,10 +626,11 @@ h1, h2, h3, h4 {
 
 /* Calendar */
 .calendar-range-label {
-  margin: 0 0 0.5rem;
-  font-size: 1.05rem;
+  margin: 0;
+  font-size: 0.95rem;
   text-transform: capitalize;
   color: var(--text);
+  white-space: nowrap;
 }
 
 .calendar-nav {
@@ -640,6 +641,26 @@ h1, h2, h3, h4 {
   margin-bottom: 0.85rem;
 }
 
+.cal-nav-icon {
+  border: 1px solid var(--border);
+  background: var(--panel-bg);
+  border-radius: 50%;
+  width: 1.8rem;
+  height: 1.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--muted);
+  padding: 0;
+}
+
+.cal-nav-icon:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
 .weekend-toggle {
   display: inline-flex;
   align-items: center;
@@ -647,55 +668,44 @@ h1, h2, h3, h4 {
   font-size: 0.85rem;
   color: var(--muted);
   cursor: pointer;
+  margin-left: auto;
 }
 
-.weather-box {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
+.weather-compact,
+.weather-compact-add {
+  border: 1px solid var(--border);
   background: var(--panel-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0.4rem 0.65rem;
-  margin-bottom: 0.6rem;
-  font-size: 0.9rem;
-  flex-wrap: wrap;
-  box-shadow: var(--shadow-sm);
-}
-
-.weather-box input[type="text"] {
-  padding: 0.35rem 0.55rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.78rem;
   font-family: inherit;
+  cursor: pointer;
+  color: var(--text);
 }
 
-.weather-temp {
-  font-weight: 700;
-  color: var(--primary);
+.weather-compact:hover,
+.weather-compact-add:hover {
+  border-color: var(--primary);
 }
 
-.weather-week {
-  flex-direction: column;
-  align-items: stretch;
+.weather-popover {
+  min-width: 260px;
 }
 
-.weather-top-row {
+.weather-popover .popover-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.weather-city-label {
   font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--text);
 }
 
 .weather-strip {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 0.25rem;
-  margin-top: 0.35rem;
+  margin-top: 0.5rem;
 }
 
 .weather-day-chip {

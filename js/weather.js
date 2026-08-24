@@ -47,80 +47,132 @@
     return d.toISOString().slice(0, 10);
   }
 
+  let openPopover = null;
+  function closePopover() {
+    if (openPopover) {
+      openPopover.remove();
+      openPopover = null;
+    }
+  }
+
   function render(container, weekStart, dayCount) {
     dayCount = dayCount || 7;
     const city = getCity();
     container.innerHTML = "";
-    const box = document.createElement("div");
-    box.className = "weather-box";
 
     if (!city) {
-      box.innerHTML = `
-        <span>🌦️ Ajouter une ville pour voir la météo :</span>
-        <input type="text" id="weather-city-input" placeholder="Ex. Montréal" />
-        <button type="button" class="btn btn-ghost btn-small" id="weather-city-save">Enregistrer</button>
-      `;
-      container.appendChild(box);
-      box.querySelector("#weather-city-save").addEventListener("click", async () => {
-        const name = box.querySelector("#weather-city-input").value.trim();
+      const link = document.createElement("button");
+      link.type = "button";
+      link.className = "weather-compact-add";
+      link.textContent = "🌦️ Ajouter météo";
+      link.addEventListener("click", () => {
+        const name = prompt("Nom de votre ville :");
         if (!name) return;
-        const results = await geocode(name);
-        if (results.length === 0) {
-          alert("Ville introuvable.");
-          return;
-        }
-        const r = results[0];
-        saveCity({ name: r.name, lat: r.latitude, lon: r.longitude });
-        render(container, weekStart);
+        geocode(name.trim()).then((results) => {
+          if (!results.length) {
+            alert("Ville introuvable.");
+            return;
+          }
+          const r = results[0];
+          saveCity({ name: r.name, lat: r.latitude, lon: r.longitude });
+          render(container, weekStart, dayCount);
+        });
       });
+      container.appendChild(link);
       return;
     }
 
-    box.classList.add("weather-week");
-    box.innerHTML = `<div class="weather-top-row"><span class="weather-city-label">📍 ${city.name}</span><button type="button" class="btn btn-ghost btn-small" id="weather-change">Changer</button></div>`;
-    const strip = document.createElement("div");
-    strip.className = "weather-strip";
-    strip.innerHTML = '<span class="muted">Chargement de la météo…</span>';
-    strip.style.gridTemplateColumns = `repeat(${dayCount}, 1fr)`;
-    box.appendChild(strip);
-    container.appendChild(box);
+    const compact = document.createElement("button");
+    compact.type = "button";
+    compact.className = "weather-compact";
+    compact.textContent = "…";
+    container.appendChild(compact);
 
-    box.querySelector("#weather-change").addEventListener("click", () => {
-      saveCity(null);
-      render(container, weekStart, dayCount);
-    });
-
+    const todayIso = iso(new Date());
     const start = weekStart || new Date();
 
     fetchDailyForecast(city.lat, city.lon)
       .then((data) => {
-        strip.innerHTML = "";
         const days = (data.daily && data.daily.time) || [];
-        for (let i = 0; i < dayCount; i++) {
-          const d = new Date(start);
-          d.setDate(d.getDate() + i);
-          const dIso = iso(d);
-          const idx = days.indexOf(dIso);
-          const chip = document.createElement("div");
-          chip.className = "weather-day-chip";
-          if (idx === -1) {
-            chip.innerHTML = `<span class="wd-na">—</span>`;
-            chip.title = d.toLocaleDateString("fr-CA", { weekday: "long" });
-          } else {
-            const code = data.daily.weather_code[idx];
-            const max = Math.round(data.daily.temperature_2m_max[idx]);
-            const min = Math.round(data.daily.temperature_2m_min[idx]);
-            const desc = WEATHER_CODES[code] || "🌡️ —";
-            const icon = desc.split(" ")[0];
-            chip.title = `${d.toLocaleDateString("fr-CA", { weekday: "long" })} — ${desc.replace(/^\S+\s*/, "")}`;
-            chip.innerHTML = `<span class="wd-icon">${icon}</span><span class="wd-temp">${max}°/${min}°</span>`;
-          }
-          strip.appendChild(chip);
+        const idx = days.indexOf(todayIso);
+        if (idx === -1) {
+          compact.textContent = `📍 ${city.name}`;
+        } else {
+          const code = data.daily.weather_code[idx];
+          const max = Math.round(data.daily.temperature_2m_max[idx]);
+          const min = Math.round(data.daily.temperature_2m_min[idx]);
+          const desc = WEATHER_CODES[code] || "🌡️ —";
+          const icon = desc.split(" ")[0];
+          compact.textContent = `${icon} ${max}°/${min}°`;
         }
+
+        compact.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (openPopover) {
+            closePopover();
+            return;
+          }
+          openWeekPopover(compact, city, data, start, dayCount, container, weekStart, dayCount);
+        });
       })
       .catch(() => {
-        strip.innerHTML = '<span class="muted">Météo indisponible pour le moment.</span>';
+        compact.textContent = "🌦️ —";
       });
+  }
+
+  function openWeekPopover(anchorEl, city, data, start, dayCount, container, weekStart, dayCountForRerender) {
+    closePopover();
+    const pop = document.createElement("div");
+    pop.className = "popover weather-popover";
+    pop.innerHTML = `<div class="popover-title">📍 ${city.name} <button type="button" class="btn btn-ghost btn-small" id="weather-change">Changer</button></div>`;
+
+    const strip = document.createElement("div");
+    strip.className = "weather-strip";
+    strip.style.gridTemplateColumns = `repeat(${dayCount}, 1fr)`;
+    const days = (data.daily && data.daily.time) || [];
+    for (let i = 0; i < dayCount; i++) {
+      const d = new Date(start);
+      d.setDate(d.getDate() + i);
+      const dIso = iso(d);
+      const idx = days.indexOf(dIso);
+      const chip = document.createElement("div");
+      chip.className = "weather-day-chip";
+      if (idx === -1) {
+        chip.innerHTML = `<span class="wd-na">—</span>`;
+        chip.title = d.toLocaleDateString("fr-CA", { weekday: "long" });
+      } else {
+        const code = data.daily.weather_code[idx];
+        const max = Math.round(data.daily.temperature_2m_max[idx]);
+        const min = Math.round(data.daily.temperature_2m_min[idx]);
+        const desc = WEATHER_CODES[code] || "🌡️ —";
+        const icon = desc.split(" ")[0];
+        chip.title = `${d.toLocaleDateString("fr-CA", { weekday: "long" })} — ${desc.replace(/^\S+\s*/, "")}`;
+        chip.innerHTML = `<span class="wd-icon">${icon}</span><span class="wd-temp">${max}°/${min}°</span>`;
+      }
+      strip.appendChild(chip);
+    }
+    pop.appendChild(strip);
+
+    document.body.appendChild(pop);
+    const rect = anchorEl.getBoundingClientRect();
+    pop.style.top = window.scrollY + rect.bottom + 4 + "px";
+    pop.style.left = window.scrollX + rect.left + "px";
+    openPopover = pop;
+
+    pop.querySelector("#weather-change").addEventListener("click", () => {
+      saveCity(null);
+      closePopover();
+      render(container, weekStart, dayCountForRerender);
+    });
+
+    setTimeout(() => {
+      document.addEventListener("click", function handler(e) {
+        if (!pop.contains(e.target) && e.target !== anchorEl) {
+          closePopover();
+          document.removeEventListener("click", handler);
+        }
+      });
+    }, 0);
   }
 
   window.Weather = { render, getCity, saveCity, geocode };
