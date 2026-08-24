@@ -1,4 +1,15 @@
 (function () {
+  const AVATAR_OPTIONS = ["🧑", "👦", "👧", "👨", "👩", "🧑‍🦱", "👩‍🦰", "👨‍🦳", "🧑‍🎓", "👩‍🏫", "👨‍🏫", "🧑‍💻", "🦸", "🧙", "🥷", "🤖"];
+
+  function getAvatar() {
+    return Store.get("accountAvatar", null);
+  }
+  function setAvatar(emoji) {
+    Store.set("accountAvatar", emoji);
+    const el = document.getElementById("account-avatar");
+    if (el) el.textContent = emoji;
+  }
+
   function getAccount() {
     return Store.get("account", { plan: "free" });
   }
@@ -28,11 +39,22 @@
 
     function paint(user) {
       if (user) {
+        const currentAvatar = getAvatar();
         content.innerHTML = `
           <p>Connecté en tant que <strong>${user.email || user.displayName || "compte Google"}</strong>.</p>
           <p class="muted">Vos groupes, élèves, horaire et ressources sont synchronisés automatiquement avec ce compte, sur tous vos appareils. Aucun autre enseignant ne peut voir vos données.</p>
+          <p class="muted" style="margin-bottom:0.3rem;">Votre icône</p>
+          <div class="avatar-picker">
+            ${AVATAR_OPTIONS.map((a) => `<button type="button" class="avatar-option ${a === currentAvatar ? "selected" : ""}" data-avatar="${a}">${a}</button>`).join("")}
+          </div>
           <button type="button" class="btn btn-ghost" id="signout-btn">Se déconnecter</button>
         `;
+        content.querySelectorAll("[data-avatar]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            setAvatar(btn.dataset.avatar);
+            content.querySelectorAll(".avatar-option").forEach((b) => b.classList.toggle("selected", b === btn));
+          });
+        });
         content.querySelector("#signout-btn").addEventListener("click", () => FirebaseSync.signOutUser());
       } else {
         content.innerHTML = `

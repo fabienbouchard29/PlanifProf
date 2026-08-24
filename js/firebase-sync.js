@@ -149,7 +149,8 @@ function updateBadge(user) {
     dot.classList.toggle("connected", !!user);
   }
   if (avatar) {
-    avatar.textContent = user && user.email ? user.email[0].toUpperCase() : "👤";
+    const chosen = Store.get("accountAvatar", null);
+    avatar.textContent = chosen || (user && user.email ? user.email[0].toUpperCase() : "👤");
   }
   if (button) {
     button.title = user ? `Compte — ${user.email || "compte Google"}` : "Compte (non connecté)";

@@ -2,13 +2,23 @@
   let selectedGroupId = null;
   let lastTeams = null;
 
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
   function generateTeams(students, numTeams, balanceLevel, balanceGender) {
     const teams = Array.from({ length: numTeams }, () => []);
-    let pool = [...students];
+    // Shuffle first, then (optionally) sort by level with a stable sort — students of the
+    // same level keep their shuffled relative order, so re-generating gives a new mix each
+    // time instead of the same deterministic split.
+    let pool = shuffle(students);
     if (balanceLevel) {
       pool.sort((a, b) => b.level - a.level);
-    } else {
-      pool.sort(() => Math.random() - 0.5);
     }
 
     let dir = 1;

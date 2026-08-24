@@ -303,6 +303,10 @@
       const exceptionType = Config.getExceptionType(dIso);
       const isWeekend = date.getDay() === 0 || date.getDay() === 6;
 
+      const periodsWrap = document.createElement("div");
+      periodsWrap.className = "calendar-day-periods";
+      col.appendChild(periodsWrap);
+
       if (exceptionType) {
         const banner = document.createElement("div");
         banner.className = "calendar-exception-banner";
@@ -314,28 +318,43 @@
 
         const underlying = Config.getUnderlyingTemplateDay(date);
         if (underlying && underlying.periods.length) {
-          underlying.periods.forEach((period) => renderPeriod(col, dIso, period, null));
+          underlying.periods.forEach((period) => renderPeriod(periodsWrap, dIso, period, null));
         }
       } else if (!templateDay || !templateDay.periods.length) {
         const empty = document.createElement("div");
         empty.className = "calendar-empty";
         empty.textContent = isWeekend ? "Fin de semaine" : "Aucun cours";
-        col.appendChild(empty);
+        periodsWrap.appendChild(empty);
       } else {
-        templateDay.periods.forEach((period) => renderPeriod(col, dIso, period, templateDay));
+        templateDay.periods.forEach((period) => renderPeriod(periodsWrap, dIso, period, templateDay));
       }
       grid.appendChild(col);
     }
     container.appendChild(grid);
 
-    // Align every day's first period to the same row: reminders/chips/exception banners are
-    // variable height per day, so equalize the "extras" block above the periods to the tallest one.
-    const extrasEls = Array.from(grid.querySelectorAll(".calendar-day-extras"));
-    if (extrasEls.length) {
-      extrasEls.forEach((el) => (el.style.minHeight = ""));
-      const maxExtrasHeight = Math.max(...extrasEls.map((el) => el.offsetHeight));
-      if (maxExtrasHeight > 0) extrasEls.forEach((el) => (el.style.minHeight = maxExtrasHeight + "px"));
+    // Align every day's rows to the same height: reminders/chips/exception banners above the
+    // periods, and the periods themselves (a subject name makes a cell taller), both vary in
+    // height day to day, so equalize each row across the week — like a real agenda grid.
+    function equalizeBlocks(wraps) {
+      wraps.forEach((el) => (el.style.minHeight = ""));
+      const maxHeight = Math.max(...wraps.map((el) => el.offsetHeight));
+      if (maxHeight > 0) wraps.forEach((el) => (el.style.minHeight = maxHeight + "px"));
     }
+    function equalizeRows(wraps) {
+      wraps.forEach((el) => (el.style.minHeight = ""));
+      let longest = wraps[0];
+      wraps.forEach((el) => {
+        if (el.children.length > (longest ? longest.children.length : 0)) longest = el;
+      });
+      if (!longest) return;
+      Array.from(longest.children).forEach((_, rowIndex) => {
+        const rowEls = wraps.map((el) => el.children[rowIndex]).filter(Boolean);
+        equalizeBlocks(rowEls);
+      });
+    }
+
+    equalizeBlocks(Array.from(grid.querySelectorAll(".calendar-day-extras")));
+    equalizeRows(Array.from(grid.querySelectorAll(".calendar-day-periods")));
 
     if (weatherEnabled && Weather.getCity()) {
       Weather.fetchForecastMap()
