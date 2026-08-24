@@ -14,8 +14,10 @@
 
   function addGroup(name) {
     const groups = getGroups();
-    groups.push({ id: Store.uuid(), name });
+    const group = { id: Store.uuid(), name };
+    groups.push(group);
     saveGroups(groups);
+    return group;
   }
   function removeGroup(id) {
     saveGroups(getGroups().filter((g) => g.id !== id));
@@ -49,6 +51,14 @@
     const sidebar = document.createElement("div");
     sidebar.className = "group-sidebar no-print";
     sidebar.innerHTML = `<h3>Groupes</h3>`;
+
+    const importBtn = document.createElement("button");
+    importBtn.type = "button";
+    importBtn.className = "btn btn-primary student-import-btn";
+    importBtn.textContent = "📋 Importer une liste (Word/Excel/PDF)";
+    importBtn.addEventListener("click", () => StudentsImport.openImportModal());
+    sidebar.appendChild(importBtn);
+
     const list = document.createElement("div");
     list.className = "group-list";
     groups.forEach((g) => {

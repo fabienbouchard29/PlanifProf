@@ -170,9 +170,30 @@
     </div>
   </div>
 
+  <div class="modal" id="student-import-modal">
+    <div class="modal-content modal-content-wide" role="dialog" aria-modal="true" aria-labelledby="student-import-modal-title">
+      <div class="modal-header">
+        <h3 id="student-import-modal-title">Importer une liste d'élèves</h3>
+        <button type="button" class="modal-close" aria-label="Fermer">✕</button>
+      </div>
+      <p class="muted">Choisissez un fichier Word, Excel ou PDF contenant vos noms d'élèves. On va essayer de les repérer — décochez ce qui n'est pas un nom avant d'importer.</p>
+      <input type="file" id="student-import-file-input" accept=".xlsx,.xls,.csv,.doc,.docx,.pdf" />
+      <p id="student-import-status" class="muted"></p>
+      <div id="student-import-group-picker" style="display:none; margin-top:0.6rem;">
+        <label>Ajouter à
+          <select id="student-import-group-select"></select>
+        </label>
+        <input type="text" id="student-import-new-group" placeholder="Nom du nouveau groupe" style="display:none; margin-top:0.4rem;" />
+      </div>
+      <div id="student-import-results" class="pdf-candidate-list"></div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@4.30.0/lib/msal-browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.7.0/mammoth.browser.min.js"></script>
   <script src="js/ms-config.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/storage.js"></script>
@@ -194,6 +215,7 @@
   <script src="js/teams-sync.js"></script>
   <script src="js/calendar.js"></script>
   <script src="js/students.js"></script>
+  <script src="js/students-import.js"></script>
   <script src="js/attendance.js"></script>
   <script src="js/evaluations.js"></script>
   <script src="js/teams.js"></script>

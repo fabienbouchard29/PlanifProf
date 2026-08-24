@@ -1100,6 +1100,12 @@ h1, h2, h3, h4 {
   color: var(--primary);
 }
 
+.calendar-day-extras {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
 .cycle-badge {
   font-size: 0.7rem;
   color: var(--muted);
@@ -1670,6 +1676,25 @@ h1, h2, h3, h4 {
 .pdf-candidate-row input {
   margin-top: 0.2rem;
   flex-shrink: 0;
+}
+
+.student-import-name-input {
+  flex: 1;
+  margin-top: 0 !important;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+
+.student-import-btn {
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+
+.student-import-apply-btn {
+  margin-top: 0.6rem;
 }
 
 .modal-header {

@@ -281,20 +281,24 @@
         templateDay && isCycleMode ? `<span class="cycle-badge">${templateDay.label}</span>` : ""
       }${weatherEnabled ? `<span class="calendar-day-weather" id="wd-${dIso}"></span>` : ""}</div>`;
       if (weatherEnabled) weatherBadges[dIso] = col.querySelector(`#wd-${dIso}`);
-      Reminders.renderDayReminders(col, dIso);
+
+      const extras = document.createElement("div");
+      extras.className = "calendar-day-extras";
+      col.appendChild(extras);
+      Reminders.renderDayReminders(extras, dIso);
       OutlookSync.forDate(dIso).forEach((ev) => {
         const chip = document.createElement("div");
         chip.className = "reminder-chip outlook-chip";
         chip.title = ev.location || "";
         chip.textContent = `👥 ${ev.time ? ev.time + " " : ""}${ev.title}`;
-        col.appendChild(chip);
+        extras.appendChild(chip);
       });
       TeamsSync.forDate(dIso).forEach((ev) => {
         const chip = document.createElement("div");
         chip.className = "reminder-chip outlook-chip";
         chip.title = ev.location || "";
         chip.textContent = `👥 ${ev.time ? ev.time + " " : ""}${ev.title}`;
-        col.appendChild(chip);
+        extras.appendChild(chip);
       });
       const exceptionType = Config.getExceptionType(dIso);
       const isWeekend = date.getDay() === 0 || date.getDay() === 6;
@@ -306,7 +310,7 @@
         banner.style.color = exceptionType.color;
         col.style.background = exceptionType.color + "15";
         col.style.borderColor = exceptionType.color;
-        col.appendChild(banner);
+        extras.appendChild(banner);
 
         const underlying = Config.getUnderlyingTemplateDay(date);
         if (underlying && underlying.periods.length) {
@@ -323,6 +327,15 @@
       grid.appendChild(col);
     }
     container.appendChild(grid);
+
+    // Align every day's first period to the same row: reminders/chips/exception banners are
+    // variable height per day, so equalize the "extras" block above the periods to the tallest one.
+    const extrasEls = Array.from(grid.querySelectorAll(".calendar-day-extras"));
+    if (extrasEls.length) {
+      extrasEls.forEach((el) => (el.style.minHeight = ""));
+      const maxExtrasHeight = Math.max(...extrasEls.map((el) => el.offsetHeight));
+      if (maxExtrasHeight > 0) extrasEls.forEach((el) => (el.style.minHeight = maxExtrasHeight + "px"));
+    }
 
     if (weatherEnabled && Weather.getCity()) {
       Weather.fetchForecastMap()

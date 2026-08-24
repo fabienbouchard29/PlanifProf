@@ -197,5 +197,5 @@
     modal.querySelector(".modal-close").onclick = () => modal.classList.remove("open");
   }
 
-  window.PdfImport = { openImportModal };
+  window.PdfImport = { openImportModal, extractTextFromPDF, extractTextViaOCR, extractSmart };
 })();
