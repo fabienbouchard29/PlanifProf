@@ -7,11 +7,14 @@
   }
   function addReminder(date, time, title, notes) {
     const list = getReminders();
-    list.push({ id: Store.uuid(), date, time: time || "", title, notes: notes || "" });
+    list.push({ id: Store.uuid(), date, time: time || "", title, notes: notes || "", done: false });
     saveReminders(list);
   }
   function updateReminder(id, patch) {
     saveReminders(getReminders().map((r) => (r.id === id ? { ...r, ...patch } : r)));
+  }
+  function toggleReminderDone(id) {
+    saveReminders(getReminders().map((r) => (r.id === id ? { ...r, done: !r.done } : r)));
   }
   function removeReminder(id) {
     saveReminders(getReminders().filter((r) => r.id !== id));
@@ -66,11 +69,25 @@
     const box = document.createElement("div");
     box.className = "day-reminders";
     remindersForDate(iso).forEach((r) => {
-      const chip = document.createElement("button");
-      chip.type = "button";
-      chip.className = "reminder-chip";
-      chip.textContent = `🔔 ${r.time ? r.time + " " : ""}${r.title}`;
+      const chip = document.createElement("div");
+      chip.className = "reminder-chip" + (r.done ? " done" : "");
       chip.title = r.notes || "";
+
+      const check = document.createElement("input");
+      check.type = "checkbox";
+      check.checked = !!r.done;
+      check.className = "reminder-check";
+      check.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleReminderDone(r.id);
+        if (window.rerenderCurrentView) window.rerenderCurrentView();
+      });
+      chip.appendChild(check);
+
+      const label = document.createElement("span");
+      label.textContent = `🔔 ${r.time ? r.time + " " : ""}${r.title}`;
+      chip.appendChild(label);
+
       chip.addEventListener("click", () => openReminderModal(iso, r));
       box.appendChild(chip);
     });
@@ -85,7 +102,9 @@
 
   function renderUpcomingWidget(container) {
     const todayIso = new Date().toISOString().slice(0, 10);
-    const reminderItems = upcomingReminders(todayIso, 7).map((r) => ({ date: r.date, time: r.time, title: r.title, kind: "rappel" }));
+    const reminderItems = upcomingReminders(todayIso, 7)
+      .filter((r) => !r.done)
+      .map((r) => ({ date: r.date, time: r.time, title: r.title, kind: "rappel" }));
 
     const events = CalendarView.getEvents();
     const to = addDaysIso(todayIso, 7);
@@ -118,5 +137,16 @@
     container.appendChild(box);
   }
 
-  window.Reminders = { getReminders, addReminder, updateReminder, removeReminder, remindersForDate, upcomingReminders, renderDayReminders, renderUpcomingWidget, openReminderModal };
+  window.Reminders = {
+    getReminders,
+    addReminder,
+    updateReminder,
+    removeReminder,
+    toggleReminderDone,
+    remindersForDate,
+    upcomingReminders,
+    renderDayReminders,
+    renderUpcomingWidget,
+    openReminderModal,
+  };
 })();

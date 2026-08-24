@@ -40,10 +40,22 @@
     const form = modal.querySelector("#event-form");
     form.title.value = existing ? existing.title : "";
     form.notes.value = existing ? existing.notes : "";
+    form.taught.checked = !!(existing && existing.taught);
     const select = form.subjectId;
     select.innerHTML =
       '<option value="">— Aucune —</option>' +
       subjects.map((s) => `<option value="${s.id}" ${existing && existing.subjectId === s.id ? "selected" : ""}>${s.name}</option>`).join("");
+
+    let selectedHighlight = (existing && existing.highlight) || "";
+    const picker = modal.querySelector("#highlight-picker");
+    picker.querySelectorAll(".highlight-swatch").forEach((btn) => {
+      btn.classList.toggle("selected", btn.dataset.highlight === selectedHighlight);
+      btn.onclick = () => {
+        selectedHighlight = btn.dataset.highlight;
+        picker.querySelectorAll(".highlight-swatch").forEach((b) => b.classList.toggle("selected", b === btn));
+      };
+    });
+
     modal.querySelector("#event-delete").style.display = existing ? "inline-block" : "none";
     modal.classList.add("open");
 
@@ -54,8 +66,10 @@
         title: form.title.value.trim(),
         subjectId: select.value || null,
         notes: form.notes.value.trim(),
+        highlight: selectedHighlight || null,
+        taught: form.taught.checked,
       };
-      if (!entry.title && !entry.notes && !entry.subjectId) {
+      if (!entry.title && !entry.notes && !entry.subjectId && !entry.highlight && !entry.taught) {
         delete evs[keyFor(dateIso, period.id)];
       } else {
         evs[keyFor(dateIso, period.id)] = entry;
@@ -72,6 +86,16 @@
       render(document.getElementById("view-calendrier"));
     };
     modal.querySelector(".modal-close").onclick = () => modal.classList.remove("open");
+  }
+
+  function toggleTaught(dateIso, period) {
+    const evs = getEvents();
+    const key = keyFor(dateIso, period.id);
+    const existing = evs[key] || { title: "", subjectId: null, notes: "", highlight: null, taught: false };
+    existing.taught = !existing.taught;
+    evs[key] = existing;
+    saveEvents(evs);
+    render(document.getElementById("view-calendrier"));
   }
 
   function formatRangeLabel(start, end) {
@@ -189,18 +213,27 @@
           const templateSubjId = assignments[TemplateView.keyFor(templateDay.id, period.id)];
           const subjId = (ev && ev.subjectId) || templateSubjId;
           const subj = subjId ? Subjects.getSubject(subjId) : null;
-          const cell = document.createElement("button");
-          cell.type = "button";
-          cell.className = "calendar-cell";
+          const cell = document.createElement("div");
+          cell.className = "calendar-cell" + (ev && ev.taught ? " taught" : "");
           if (subj) {
             cell.style.borderLeftColor = subj.color;
             cell.style.background = subj.color + "15";
           }
+          if (ev && ev.highlight) {
+            cell.classList.add("highlight-" + ev.highlight);
+          }
           cell.innerHTML = `
-            <div class="calendar-cell-period">${period.label}${period.start ? " · " + period.start : ""}</div>
-            <div class="calendar-cell-title">${ev && ev.title ? ev.title : subj ? subj.name : ""}</div>
+            <button type="button" class="calendar-cell-body">
+              <div class="calendar-cell-period">${period.label}${period.start ? " · " + period.start : ""}</div>
+              <div class="calendar-cell-title">${ev && ev.title ? ev.title : subj ? subj.name : ""}</div>
+            </button>
+            <button type="button" class="calendar-cell-taught" title="Marquer comme enseignée">${ev && ev.taught ? "✓" : ""}</button>
           `;
-          cell.addEventListener("click", () => openEventModal(dIso, period));
+          cell.querySelector(".calendar-cell-body").addEventListener("click", () => openEventModal(dIso, period));
+          cell.querySelector(".calendar-cell-taught").addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleTaught(dIso, period);
+          });
           col.appendChild(cell);
         });
       }

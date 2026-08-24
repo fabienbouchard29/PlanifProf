@@ -90,6 +90,16 @@
         <label>Notes
           <textarea name="notes" rows="3" placeholder="Détails, matériel requis…"></textarea>
         </label>
+        <label>Surligner
+          <div class="highlight-picker" id="highlight-picker">
+            <button type="button" class="highlight-swatch none selected" data-highlight="">Aucun</button>
+            <button type="button" class="highlight-swatch" data-highlight="yellow" style="background:#fff3b0"></button>
+            <button type="button" class="highlight-swatch" data-highlight="pink" style="background:#ffd1e3"></button>
+            <button type="button" class="highlight-swatch" data-highlight="green" style="background:#c8f2c8"></button>
+            <button type="button" class="highlight-swatch" data-highlight="blue" style="background:#c9e4ff"></button>
+          </div>
+        </label>
+        <label class="checkbox-label"><input type="checkbox" name="taught" /> Période enseignée ✓</label>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" id="event-delete">Supprimer</button>
           <button type="submit" class="btn btn-primary">Enregistrer</button>
