@@ -123,7 +123,6 @@
       <button type="button" class="btn btn-ghost" id="cal-today">Aujourd'hui</button>
       <button type="button" class="btn btn-ghost" id="cal-next">Semaine suivante ▶</button>
       <label class="weekend-toggle"><input type="checkbox" id="cal-show-weekends" ${showWeekends ? "checked" : ""} /> Fins de semaine</label>
-      ${Modules.isEnabled("ocr") ? '<button type="button" class="btn btn-primary" id="cal-import-photo">📷 Importer une photo</button>' : ""}
     `;
     container.appendChild(nav);
     nav.querySelector("#cal-prev").addEventListener("click", () => {
@@ -142,9 +141,6 @@
       Store.set("showWeekends", e.target.checked);
       render(container);
     });
-    const importBtn = nav.querySelector("#cal-import-photo");
-    if (importBtn) importBtn.addEventListener("click", () => Ocr.openImportModal());
-
     if (Modules.isEnabled("meteo")) {
       const weatherEl = document.createElement("div");
       weatherEl.id = "weather-widget";

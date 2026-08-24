@@ -174,6 +174,16 @@
         document.dispatchEvent(new CustomEvent("config-changed"));
       });
     }
+    if (Modules.isEnabled("ocr")) {
+      const photoImportRow = document.createElement("div");
+      photoImportRow.style.marginTop = "0.75rem";
+      photoImportRow.innerHTML = `
+        <button type="button" class="btn btn-ghost" id="template-import-photo">📷 Importer une photo de mon horaire papier</button>
+        <p class="muted" style="margin:0.3rem 0 0;">Utile surtout une fois, pour transférer un horaire déjà écrit sur papier.</p>
+      `;
+      photoImportRow.querySelector("#template-import-photo").addEventListener("click", () => Ocr.openImportModal());
+      settings.appendChild(photoImportRow);
+    }
 
     const subjectsSection = document.createElement("details");
     subjectsSection.className = "settings-panel";
