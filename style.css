@@ -907,6 +907,34 @@ h1, h2, h3, h4 {
   font-weight: 500;
   color: var(--text);
   cursor: text;
+  transition: min-height 0.1s ease;
+}
+
+.calendar-cell.note-expanded {
+  position: relative;
+  z-index: 20;
+  box-shadow: var(--shadow-lg);
+}
+
+.calendar-cell.note-expanded .calendar-cell-note {
+  min-height: 5.5em;
+  overflow: auto;
+  background: var(--panel-bg);
+}
+
+.note-tooltip {
+  position: absolute;
+  z-index: 200;
+  max-width: 240px;
+  background: var(--text);
+  color: white;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  white-space: pre-wrap;
+  pointer-events: none;
 }
 
 .calendar-cell-note:focus {

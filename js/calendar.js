@@ -183,10 +183,15 @@
       `;
       const noteArea = cell.querySelector(".calendar-cell-note");
       noteArea.value = (ev && ev.title) || "";
-      noteArea.title = noteArea.value;
       noteArea.addEventListener("click", (e) => e.stopPropagation());
+      noteArea.addEventListener("focus", () => {
+        cell.classList.add("note-expanded");
+        hideNoteTooltip();
+      });
+      noteArea.addEventListener("blur", () => {
+        cell.classList.remove("note-expanded");
+      });
       noteArea.addEventListener("input", () => {
-        noteArea.title = noteArea.value;
         const evs = getEvents();
         const key = keyFor(dIso, period.id);
         const existing = evs[key] || { title: "", subjectId: null, notes: "", highlight: null, taught: false };
@@ -198,6 +203,28 @@
         }
         saveEvents(evs);
       });
+
+      let noteTooltip = null;
+      function hideNoteTooltip() {
+        if (noteTooltip) {
+          noteTooltip.remove();
+          noteTooltip = null;
+        }
+      }
+      cell.addEventListener("mouseenter", () => {
+        if (document.activeElement === noteArea) return;
+        if (!noteArea.value.trim()) return;
+        hideNoteTooltip();
+        const tip = document.createElement("div");
+        tip.className = "note-tooltip";
+        tip.textContent = noteArea.value;
+        document.body.appendChild(tip);
+        const rect = cell.getBoundingClientRect();
+        tip.style.top = window.scrollY + rect.bottom + 4 + "px";
+        tip.style.left = window.scrollX + rect.left + "px";
+        noteTooltip = tip;
+      });
+      cell.addEventListener("mouseleave", hideNoteTooltip);
       cell.querySelector(".calendar-cell-more").addEventListener("click", (e) => {
         e.stopPropagation();
         openEventModal(dIso, period);
