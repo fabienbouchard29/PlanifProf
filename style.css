@@ -1717,6 +1717,196 @@ h1, h2, h3, h4 {
   margin-top: 0.6rem;
 }
 
+.progress-range {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 0.75rem 0;
+  font-size: 0.85rem;
+}
+
+.progress-range input {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  margin-left: 0.3rem;
+}
+
+.progress-row {
+  margin-bottom: 0.85rem;
+}
+
+.progress-row-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+}
+
+.progress-row-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.progress-bar-track {
+  background: var(--bg-alt);
+  border-radius: 999px;
+  height: 0.5rem;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.month-overview-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.month-overview-nav h3 {
+  margin: 0;
+  min-width: 10ch;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.month-overview-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.month-overview-table th {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 600;
+  padding-bottom: 0.3rem;
+}
+
+.month-overview-table td {
+  vertical-align: top;
+  padding: 2px;
+}
+
+.mo-day {
+  min-height: 3.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.mo-day.today {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-soft);
+}
+
+.mo-day-num {
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.mo-day-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem;
+}
+
+.mo-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.mo-day-reminder {
+  font-size: 0.62rem;
+  color: var(--muted);
+}
+
+.grading-box {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.grading-box h3 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+}
+
+.grading-add-form {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+}
+
+.grading-add-form input[name="title"] {
+  flex: 1;
+  min-width: 160px;
+}
+
+.grading-add-form input,
+.grading-add-form select {
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+}
+
+.grading-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.grading-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.grading-row.done {
+  opacity: 0.55;
+}
+
+.grading-row.done .grading-check span {
+  text-decoration: line-through;
+}
+
+.grading-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+
+.grading-due {
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;

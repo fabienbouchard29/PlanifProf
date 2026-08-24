@@ -154,8 +154,12 @@
       <button type="button" class="btn btn-ghost btn-small" id="cal-today">Aujourd'hui</button>
       <span id="weather-widget"></span>
       <label class="weekend-toggle"><input type="checkbox" id="cal-show-weekends" ${showWeekends ? "checked" : ""} /> Fins de semaine</label>
+      <button type="button" class="cal-nav-icon" id="cal-progress" title="Suivi du programme">📊</button>
+      <button type="button" class="cal-nav-icon" id="cal-month-overview" title="Aperçu du mois">🗓️</button>
     `;
     container.appendChild(nav);
+    nav.querySelector("#cal-progress").addEventListener("click", () => Progress.openModal());
+    nav.querySelector("#cal-month-overview").addEventListener("click", () => MonthOverview.openModal());
     nav.querySelector("#cal-prev").addEventListener("click", () => {
       weekStart = addDays(weekStart, -7);
       render(container);

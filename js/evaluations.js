@@ -17,6 +17,8 @@
 
   function render(container) {
     container.innerHTML = "";
+    Grading.render(container);
+
     const groups = Students.getGroups();
     if (!groups.length) {
       EmptyState.render(container, {

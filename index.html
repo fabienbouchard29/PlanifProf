@@ -198,6 +198,31 @@
     </div>
   </div>
 
+  <div class="modal" id="progress-modal">
+    <div class="modal-content modal-content-wide" role="dialog" aria-modal="true" aria-labelledby="progress-modal-title">
+      <div class="modal-header">
+        <h3 id="progress-modal-title">📊 Suivi du programme</h3>
+        <button type="button" class="modal-close" aria-label="Fermer">✕</button>
+      </div>
+      <p class="muted">Basé sur les périodes cochées « enseignée ✓ » dans l'agenda.</p>
+      <div class="progress-range">
+        <label>Du <input type="date" id="progress-from" /></label>
+        <label>au <input type="date" id="progress-to" /></label>
+      </div>
+      <div id="progress-body"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="month-overview-modal">
+    <div class="modal-content modal-content-wide" role="dialog" aria-modal="true" aria-labelledby="month-overview-modal-title">
+      <div class="modal-header">
+        <h3 id="month-overview-modal-title">🗓️ Aperçu du mois</h3>
+        <button type="button" class="modal-close" aria-label="Fermer">✕</button>
+      </div>
+      <div id="month-overview-body"></div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@4.30.0/lib/msal-browser.min.js"></script>
@@ -224,9 +249,12 @@
   <script src="js/outlook-sync.js"></script>
   <script src="js/teams-sync.js"></script>
   <script src="js/calendar.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/month-overview.js"></script>
   <script src="js/students.js"></script>
   <script src="js/students-import.js"></script>
   <script src="js/attendance.js"></script>
+  <script src="js/grading.js"></script>
   <script src="js/evaluations.js"></script>
   <script src="js/teams.js"></script>
   <script src="js/picker.js"></script>
